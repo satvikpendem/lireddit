@@ -41,3 +41,5 @@ keystone.db
 
 # typescript
 *.tsbuildinfo
+
+.DS_Store

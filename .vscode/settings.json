@@ -8,5 +8,17 @@
     "frontend"
   ],
   "typescript.tsdk": "backend/.yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "lireddit",
+      "database": "lireddit",
+      "username": "api_user",
+      "password": "postgres"
+    }
+  ]
 }

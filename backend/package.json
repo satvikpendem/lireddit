@@ -3,7 +3,8 @@
   "packageManager": "yarn@3.2.3",
   "scripts": {
     "start": "nodemon dist/index.js",
-    "watch": "swc src -d dist -w"
+    "watch": "swc src -d dist -w",
+    "dev": "concurrently -c bgBlueBright,bgGreenBright \"yarn watch\" \"yarn start\""
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
@@ -12,9 +13,8 @@
     "@types/node": "^18.7.16",
     "@types/validator": "^13.7.6",
     "chokidar": "^3.5.3",
+    "concurrently": "^7.4.0",
     "nodemon": "^2.0.19",
-    "ts-node": "^10.9.1",
-    "tsc-watch": "^5.0.3",
     "typescript": "^4.8.3"
   },
   "dependencies": {
@@ -26,7 +26,6 @@
     "express": "^4.18.1",
     "graphql": "^15",
     "pg": "^8.8.0",
-    "prisma": "^4.3.1",
-    "reflect-metadata": "^0.1.13"
+    "prisma": "^4.3.1"
   }
 }

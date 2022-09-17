@@ -53,6 +53,21 @@ builder.queryFields(
 					},
 				}),
 		}),
+		me: t.prismaField({
+			type: "User",
+			nullable: true,
+			resolve: (query, _, __, { req: { session: { userId } } }) => {
+				if (!userId) {
+					throw new Error("Not authenticated");
+				}
+				return db.user.findUnique({
+					...query,
+					where: {
+						id: userId,
+					},
+				});
+			},
+		}),
 	}),
 );
 

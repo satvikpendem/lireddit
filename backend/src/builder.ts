@@ -3,7 +3,7 @@ import PrismaPlugin from "@pothos/plugin-prisma";
 import ErrorsPlugin from "@pothos/plugin-errors";
 import { db } from "./db";
 
-import type PrismaTypes from "@pothos/plugin-prisma/generated";
+import type PrismaTypes from "../generated/pothos-types";
 import type { ExpressContext } from "apollo-server-express";
 
 export const builder = new SchemaBuilder<

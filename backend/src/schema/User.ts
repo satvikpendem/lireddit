@@ -108,8 +108,6 @@ builder.mutationFields(
 				req.session.userId = user.id;
 				await req.session.save();
 
-				console.log(req.session.userId);
-
 				return user;
 			},
 		}),
@@ -149,7 +147,6 @@ builder.mutationFields(
 				req.session.userId = user.id;
 				await req.session.save();
 
-				console.log(req.session.userId);
 				return user;
 			},
 		}),

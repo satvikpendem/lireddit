@@ -1,8 +1,9 @@
-interface Props {
-}
+import Register from "../components/Register/Register";
 
-const Register: React.FC<Props> = () => {
-  return <>Register</>;
+interface Props {}
+
+const RegisterPage: React.FC<Props> = () => {
+  return <Register />;
 };
 
-export default Register;
+export default RegisterPage;

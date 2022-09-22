@@ -1,0 +1,25 @@
+mutation Register($register: UserCreateInput!) {
+  register(input: $register) {
+    ... on Error {
+      error
+    }
+    ... on MutationRegisterSuccess {
+      data {
+        username
+      }
+    }
+  }
+}
+
+mutation Login($login: UserCreateInput!) {
+  login(input: $login) {
+    ... on Error {
+      error
+    }
+    ... on MutationLoginSuccess {
+      data {
+        username
+      }
+    }
+  }
+}

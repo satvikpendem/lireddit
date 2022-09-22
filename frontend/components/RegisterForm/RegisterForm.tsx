@@ -13,6 +13,12 @@ import {
   _spacer,
   _submit,
 } from "./RegisterForm.css";
+import { useMutation } from "@apollo/client";
+import {
+  RegisterDocument,
+  RegisterMutation,
+  RegisterMutationVariables,
+} from "../../services/graphql/generated/graphql";
 
 const AnimatedToggle: React.FC<
   PropsWithChildren & {
@@ -42,18 +48,40 @@ type FormValues = {
 };
 
 const RegisterForm: React.FC = () => {
-  const { register, formState: { errors, isSubmitting }, handleSubmit } =
-    useForm<
-      FormValues
-    >();
+  const [register, { loading, data }] = useMutation<
+    RegisterMutation,
+    RegisterMutationVariables
+  >(RegisterDocument);
 
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  const {
+    register: registerField,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+  } = useForm<
+    FormValues
+  >();
 
   const onSubmit = async (values: FormValues) => {
-    await sleep(1000);
-    console.log(values);
+    register({
+      variables: {
+        register: {
+          username: values.username,
+          password: values.password,
+        },
+      },
+    });
   };
+
+  const isSuccessfulRegistration =
+    data?.register?.__typename === "MutationRegisterSuccess";
+  const successMessage =
+    data?.register?.__typename === "MutationRegisterSuccess" &&
+    `${data?.register?.data.username} has been registered successfully`;
+  const isServerError = data?.register?.__typename === "Error";
+  const serverErrorMessage = data?.register?.__typename === "Error" &&
+    data?.register?.error;
+
+  console.log({ loading, data });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={_root}>
@@ -62,7 +90,7 @@ const RegisterForm: React.FC = () => {
       </Label>
       <input
         placeholder="John Doe"
-        {...register("username", {
+        {...registerField("username", {
           required: true,
         })}
         className={_field}
@@ -76,7 +104,8 @@ const RegisterForm: React.FC = () => {
       </Label>
       <input
         placeholder="Password"
-        {...register("password", {
+        type={"password"}
+        {...registerField("password", {
           required: true,
         })}
         className={_field}
@@ -94,12 +123,24 @@ const RegisterForm: React.FC = () => {
         onClick={handleSubmit(onSubmit)}
       >
         <AnimatePresence>
-          {isSubmitting &&
+          {(isSubmitting || loading) &&
             <div className={_loading} />}
-          {!isSubmitting &&
+          {!(isSubmitting || loading) &&
             <span>Register</span>}
         </AnimatePresence>
       </motion.button>
+      <AnimatedToggle condition={isServerError}>
+        <span className={_error}>
+          {serverErrorMessage}
+        </span>
+      </AnimatedToggle>
+      <AnimatedToggle condition={isSuccessfulRegistration}>
+        <span
+          style={{ color: "green" }}
+        >
+          {successMessage}
+        </span>
+      </AnimatedToggle>
     </form>
   );
 };

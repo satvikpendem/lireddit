@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
 import {
   RegisterDocument,
   RegisterMutation,
@@ -9,6 +10,7 @@ import {
 import AuthenticationForm, {
   FormValues,
 } from "../AuthenticationForm/AuthenticationForm";
+
 import { _base } from "./Register.css";
 
 const Register: React.FC = () => {

@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
-import router from "next/router";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+
 import {
   LoginDocument,
   LoginMutation,
@@ -9,6 +10,7 @@ import {
 import AuthenticationForm, {
   FormValues,
 } from "../AuthenticationForm/AuthenticationForm";
+
 import { _base } from "./Login.css";
 
 const Login: React.FC = () => {
@@ -17,6 +19,8 @@ const Login: React.FC = () => {
     LoginMutationVariables
   >(LoginDocument);
 
+  const router = useRouter();
+
   useEffect(() => {
     if (data?.login?.__typename === "MutationLoginSuccess") {
       router.push("/");
@@ -24,7 +28,7 @@ const Login: React.FC = () => {
   }, [data?.login?.__typename]);
 
   const onSubmit = async ({ username, password }: FormValues) => {
-    await register({
+    register({
       variables: {
         login: {
           username,

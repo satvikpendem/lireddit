@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "urql";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -14,7 +14,7 @@ import AuthenticationForm, {
 import { _base } from "./Login.css";
 
 const Login: React.FC = () => {
-  const [register, { loading, data }] = useMutation<
+  const [{ fetching, data }, login] = useMutation<
     LoginMutation,
     LoginMutationVariables
   >(LoginDocument);
@@ -28,12 +28,10 @@ const Login: React.FC = () => {
   }, [data?.login?.__typename]);
 
   const onSubmit = async ({ username, password }: FormValues) => {
-    register({
-      variables: {
-        login: {
-          username,
-          password,
-        },
+    login({
+      login: {
+        username,
+        password,
       },
     });
   };
@@ -44,7 +42,7 @@ const Login: React.FC = () => {
       <AuthenticationForm
         type="login"
         data={data}
-        loading={loading}
+        loading={fetching}
         onSubmit={onSubmit}
       />
     </div>

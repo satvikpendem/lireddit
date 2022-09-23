@@ -1,14 +1,15 @@
-import { ApolloProvider } from "@apollo/client";
-
 import type { AppProps } from "next/app";
+import { Provider } from "urql";
+
 import { client } from "../services/graphql/client";
+
 import "../styles/globalStyles.css";
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
+    <Provider value={client}>
       <Component {...pageProps} />
-    </ApolloProvider>
+    </Provider>
   );
 }
 

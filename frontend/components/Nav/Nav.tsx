@@ -1,8 +1,7 @@
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "urql";
 
 import {
   LogoutDocument,
@@ -15,16 +14,17 @@ import { _base, _username } from "./Nav.css";
 interface Props {}
 
 const Nav: React.FC<Props> = () => {
-  const { loading, data } = useQuery<MeQuery>(MeDocument, {
-    fetchPolicy: "network-only",
+  const [{ fetching, data }, reexecuteQuery] = useQuery<MeQuery>({
+    query: MeDocument,
   });
-  const [logout] = useMutation<LogoutMutation>(LogoutDocument);
+  const [_, logout] = useMutation<LogoutMutation>(LogoutDocument);
   const [loggingOut, setLoggingOut] = useState(false);
-  const router = useRouter();
 
-  if (loading) {
+  if (fetching) {
     return <div>Loading...</div>;
   }
+
+  console.log({ data });
 
   if (data?.me) {
     return (
@@ -34,7 +34,7 @@ const Nav: React.FC<Props> = () => {
           onClick={async () => {
             setLoggingOut(true);
             await logout();
-            router.reload();
+            reexecuteQuery();
           }}
           disabled={loggingOut}
         >

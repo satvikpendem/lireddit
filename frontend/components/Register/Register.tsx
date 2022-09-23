@@ -1,6 +1,6 @@
-import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useMutation } from "urql";
 
 import {
   RegisterDocument,
@@ -14,7 +14,7 @@ import AuthenticationForm, {
 import { _base } from "./Register.css";
 
 const Register: React.FC = () => {
-  const [register, { loading, data }] = useMutation<
+  const [{ fetching, data }, register] = useMutation<
     RegisterMutation,
     RegisterMutationVariables
   >(RegisterDocument);
@@ -29,11 +29,9 @@ const Register: React.FC = () => {
 
   const onSubmit = ({ username, password }: FormValues) => {
     register({
-      variables: {
-        register: {
-          username,
-          password,
-        },
+      register: {
+        username,
+        password,
       },
     });
   };
@@ -44,7 +42,7 @@ const Register: React.FC = () => {
       <AuthenticationForm
         type="register"
         data={data}
-        loading={loading}
+        loading={fetching}
         onSubmit={onSubmit}
       />
     </div>

@@ -1,7 +1,15 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { createClient, dedupExchange, fetchExchange } from "urql";
+import { cacheExchange } from "@urql/exchange-graphcache";
 
-export const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
-  credentials: "include",
+export const client = createClient({
+  url: "http://localhost:4000/graphql",
+  fetchOptions: {
+    credentials: "include",
+  },
+  exchanges: [
+    dedupExchange,
+    cacheExchange({}),
+    fetchExchange,
+  ],
+  requestPolicy: "cache-and-network",
 });

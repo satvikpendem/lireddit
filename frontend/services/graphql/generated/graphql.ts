@@ -1,3 +1,5 @@
+import { Resolver as GraphCacheResolver, UpdateResolver as GraphCacheUpdateResolver, OptimisticMutationResolver as GraphCacheOptimisticMutationResolver, StorageAdapter as GraphCacheStorageAdapter } from '@urql/exchange-graphcache';
+import { IntrospectionData } from '@urql/exchange-graphcache/dist/types/ast';
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -151,6 +153,76 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type WithTypename<T extends { __typename?: any }> = Partial<T> & { __typename: NonNullable<T['__typename']> };
+
+export type GraphCacheKeysConfig = {
+  Error?: (data: WithTypename<Error>) => null | string,
+  MutationLoginSuccess?: (data: WithTypename<MutationLoginSuccess>) => null | string,
+  MutationRegisterSuccess?: (data: WithTypename<MutationRegisterSuccess>) => null | string,
+  Post?: (data: WithTypename<Post>) => null | string,
+  User?: (data: WithTypename<User>) => null | string
+}
+
+export type GraphCacheResolvers = {
+  Query?: {
+    me?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<User> | string>,
+    post?: GraphCacheResolver<WithTypename<Query>, QueryPostArgs, WithTypename<Post> | string>,
+    posts?: GraphCacheResolver<WithTypename<Query>, QueryPostsArgs, Array<WithTypename<Post> | string>>,
+    user?: GraphCacheResolver<WithTypename<Query>, QueryUserArgs, WithTypename<User> | string>,
+    users?: GraphCacheResolver<WithTypename<Query>, QueryUsersArgs, Array<WithTypename<User> | string>>
+  },
+  Error?: {
+    error?: GraphCacheResolver<WithTypename<Error>, Record<string, never>, Scalars['String'] | string>
+  },
+  MutationLoginSuccess?: {
+    data?: GraphCacheResolver<WithTypename<MutationLoginSuccess>, Record<string, never>, WithTypename<User> | string>
+  },
+  MutationRegisterSuccess?: {
+    data?: GraphCacheResolver<WithTypename<MutationRegisterSuccess>, Record<string, never>, WithTypename<User> | string>
+  },
+  Post?: {
+    createdAt?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>,
+    id?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['ID'] | string>,
+    title?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>
+  },
+  User?: {
+    createdAt?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>,
+    id?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['ID'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>,
+    username?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>
+  }
+};
+
+export type GraphCacheOptimisticUpdaters = {
+  createPost?: GraphCacheOptimisticMutationResolver<MutationCreatePostArgs, Maybe<WithTypename<Post>>>,
+  deletePost?: GraphCacheOptimisticMutationResolver<MutationDeletePostArgs, Maybe<WithTypename<Post>>>,
+  login?: GraphCacheOptimisticMutationResolver<MutationLoginArgs, Maybe<WithTypename<MutationLoginResult>>>,
+  logout?: GraphCacheOptimisticMutationResolver<Record<string, never>, Scalars['Boolean']>,
+  register?: GraphCacheOptimisticMutationResolver<MutationRegisterArgs, Maybe<WithTypename<MutationRegisterResult>>>,
+  updatePost?: GraphCacheOptimisticMutationResolver<MutationUpdatePostArgs, Maybe<WithTypename<Post>>>
+};
+
+export type GraphCacheUpdaters = {
+  Mutation?: {
+    createPost?: GraphCacheUpdateResolver<{ createPost: Maybe<WithTypename<Post>> }, MutationCreatePostArgs>,
+    deletePost?: GraphCacheUpdateResolver<{ deletePost: Maybe<WithTypename<Post>> }, MutationDeletePostArgs>,
+    login?: GraphCacheUpdateResolver<{ login: Maybe<WithTypename<MutationLoginResult>> }, MutationLoginArgs>,
+    logout?: GraphCacheUpdateResolver<{ logout: Scalars['Boolean'] }, Record<string, never>>,
+    register?: GraphCacheUpdateResolver<{ register: Maybe<WithTypename<MutationRegisterResult>> }, MutationRegisterArgs>,
+    updatePost?: GraphCacheUpdateResolver<{ updatePost: Maybe<WithTypename<Post>> }, MutationUpdatePostArgs>
+  },
+  Subscription?: {},
+};
+
+export type GraphCacheConfig = {
+  schema?: IntrospectionData,
+  updates?: GraphCacheUpdaters,
+  keys?: GraphCacheKeysConfig,
+  optimistic?: GraphCacheOptimisticUpdaters,
+  resolvers?: GraphCacheResolvers,
+  storage?: GraphCacheStorageAdapter
+};
 export const RegularUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RegularUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]} as unknown as DocumentNode<RegularUserFragment, unknown>;
 export const UsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<UsersQuery, UsersQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;

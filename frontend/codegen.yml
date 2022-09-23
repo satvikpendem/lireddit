@@ -6,8 +6,6 @@ generates:
     plugins:
       - "typescript"
       - "typescript-operations"
+      - "typescript-urql-graphcache"
       - "typed-document-node"
       - "fragment-matcher"
-  ./graphql.schema.json:
-    plugins:
-      - "introspection"

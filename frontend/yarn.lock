@@ -923,6 +923,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-codegen/typescript-urql-graphcache@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@graphql-codegen/typescript-urql-graphcache@npm:2.4.0"
+  dependencies:
+    "@graphql-codegen/plugin-helpers": ^2.6.2
+    "@graphql-codegen/visitor-plugin-common": 2.12.1
+    auto-bind: ~4.0.0
+    change-case-all: 1.0.14
+    tslib: ~2.4.0
+  peerDependencies:
+    "@urql/exchange-graphcache": ^4.1.1 || ^5.0.0
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    graphql-tag: ^2.0.0
+  checksum: 7657b38299ed4c507ab6da947439dd49d5e60bd4ad7cae43970c72dfc04a96f22422b57551c1c5665c7f7aed3ce1fcaba2a6a68206171c08d3fe2423dc5ff707
+  languageName: node
+  linkType: hard
+
 "@graphql-codegen/typescript@npm:^2.7.3":
   version: 2.7.3
   resolution: "@graphql-codegen/typescript@npm:2.7.3"
@@ -5137,6 +5154,7 @@ __metadata:
     "@graphql-codegen/typed-document-node": ^2.3.3
     "@graphql-codegen/typescript": ^2.7.3
     "@graphql-codegen/typescript-operations": ^2.5.3
+    "@graphql-codegen/typescript-urql-graphcache": ^2.4.0
     "@graphql-typed-document-node/core": ^3.1.1
     "@radix-ui/react-label": ^1.0.0
     "@types/node": 18.7.18

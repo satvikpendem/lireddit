@@ -1,3 +1,22 @@
+fragment RegularUser on User {
+  id
+  username
+}
+
+query Users {
+  users {
+    id
+    username
+  }
+}
+
+query Me {
+  me {
+    id
+    username
+  }
+}
+
 mutation Register($register: UserCreateInput!) {
   register(input: $register) {
     ... on Error {
@@ -5,7 +24,7 @@ mutation Register($register: UserCreateInput!) {
     }
     ... on MutationRegisterSuccess {
       data {
-        username
+        ...RegularUser
       }
     }
   }
@@ -18,8 +37,12 @@ mutation Login($login: UserCreateInput!) {
     }
     ... on MutationLoginSuccess {
       data {
-        username
+        ...RegularUser
       }
     }
   }
+}
+
+mutation Logout {
+  logout
 }

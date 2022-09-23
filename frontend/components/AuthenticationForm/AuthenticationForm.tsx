@@ -146,7 +146,7 @@ const AuthenticationForm: React.FC<Props> = ({
           {(isSubmitting || loading) &&
             <div className={_loading} />}
           {!(isSubmitting || loading) &&
-            <span>Register</span>}
+            <span>{type === "login" ? "Login" : "Register"}</span>}
         </AnimatePresence>
       </motion.button>
       <AnimatedToggle condition={isFailure()}>

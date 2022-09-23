@@ -38,6 +38,8 @@ mutation Login($login: UserCreateInput!) {
     ... on MutationLoginSuccess {
       data {
         ...RegularUser
+        # id
+        # username
       }
     }
   }

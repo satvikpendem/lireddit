@@ -33,7 +33,7 @@ const Nav: React.FC<Props> = () => {
         <button
           onClick={async () => {
             setLoggingOut(true);
-            await logout();
+            logout();
             reexecuteQuery();
           }}
           disabled={loggingOut}

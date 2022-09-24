@@ -20,10 +20,20 @@ import AnimatedToggle from "../AnimatedToggle/AnimatedToggle";
 
 type AuthenticationFormType = "register" | "login";
 
-export type FormValues = {
-  username: string;
+interface BaseFormValues {
+  email: string;
   password: string;
-};
+}
+
+export interface RegisterFormValues extends BaseFormValues {
+  username: string;
+}
+
+export interface LoginFormValues extends BaseFormValues {
+  usernameOrEmail: string;
+}
+
+type FormValues = RegisterFormValues & LoginFormValues;
 
 interface BaseProps {
   type: AuthenticationFormType;
@@ -105,20 +115,61 @@ const AuthenticationForm: React.FC<Props> = ({
       onSubmit={handleSubmit(onSubmit)}
       className={_root}
     >
-      <Label htmlFor="username" className={_label}>
-        Username
-      </Label>
-      <input
-        placeholder="John Doe"
-        {...register("username", {
-          required: true,
-        })}
-        className={_field}
-      />
-      <AnimatedToggle condition={errors.username?.type === "required"}>
-        <span className={_error}>Username is required</span>
-      </AnimatedToggle>
-      <div className={_spacer} />
+      {type === "login" &&
+        (
+          <>
+            <Label htmlFor="usernameOrEmail" className={_label}>
+              Username or Email
+            </Label>
+            <input
+              placeholder="John Doe"
+              {...register("usernameOrEmail", {
+                required: true,
+              })}
+              className={_field}
+            />
+            <AnimatedToggle
+              condition={errors.usernameOrEmail?.message === "register"}
+            >
+              <span className={_error}>Username or email is required</span>
+            </AnimatedToggle>
+            <div className={_spacer} />
+          </>
+        )}
+
+      {type === "register" && (
+        <>
+          <Label htmlFor="username" className={_label}>
+            Username
+          </Label>
+          <input
+            placeholder="John Doe"
+            {...register("username", {
+              required: true,
+            })}
+            className={_field}
+          />
+          <AnimatedToggle condition={errors.username?.type === "required"}>
+            <span className={_error}>Username is required</span>
+          </AnimatedToggle>
+          <div className={_spacer} />
+          <Label htmlFor="email" className={_label}>
+            Email
+          </Label>
+          <input
+            placeholder="your@email.com"
+            {...register("email", {
+              required: true,
+            })}
+            className={_field}
+          />
+          <AnimatedToggle condition={errors.email?.type === "required"}>
+            <span className={_error}>Username is required</span>
+          </AnimatedToggle>
+          <div className={_spacer} />
+        </>
+      )}
+
       <Label htmlFor="password" className={_label}>
         Password
       </Label>

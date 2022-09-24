@@ -8,7 +8,7 @@ import {
   RegisterMutationVariables,
 } from "../../services/graphql/generated/graphql";
 import AuthenticationForm, {
-  FormValues,
+  RegisterFormValues,
 } from "../AuthenticationForm/AuthenticationForm";
 
 import { _base } from "./Register.css";
@@ -27,10 +27,11 @@ const Register: React.FC = () => {
     }
   }, [data?.register?.__typename]);
 
-  const onSubmit = ({ username, password }: FormValues) => {
+  const onSubmit = ({ username, email, password }: RegisterFormValues) => {
     register({
       register: {
         username,
+        email,
         password,
       },
     });

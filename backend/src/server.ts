@@ -4,8 +4,11 @@ import express from "express";
 import { schema } from "./schema";
 import session from "./session";
 import { PROD } from "./constants";
+import { db } from "./db";
 
 export async function startServer() {
+  db.user.deleteMany({});
+
   const app = express();
 
   app.use(session);

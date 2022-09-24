@@ -5,7 +5,8 @@
     "start": "nodemon dist/index.js",
     "watch": "swc src -d dist -w",
     "check": "tsc --noEmit",
-    "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"yarn check\" \"yarn watch\" \"yarn start\"",
+    "studio": "prisma studio",
+    "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"yarn check\" \"yarn watch\" \"yarn start\" \"yarn studio\"",
     "db:migrate": "yarn pnpify prisma migrate dev",
     "db:generate": "yarn pnpify prisma generate"
   },
@@ -15,9 +16,11 @@
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.5",
     "@types/node": "^18.7.18",
+    "@types/nodemailer": "^6.4.6",
     "@types/validator": "^13.7.6",
     "chokidar": "^3.5.3",
     "concurrently": "^7.4.0",
+    "nodemailer": "^6.7.8",
     "nodemon": "^2.0.19",
     "prisma": "4.3.1",
     "typescript": "^4.8.3"

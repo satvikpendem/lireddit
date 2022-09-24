@@ -3,10 +3,19 @@ import argon2 from "argon2";
 import { builder } from "../builder";
 import { COOKIE_NAME } from "../constants";
 import { db } from "../db";
+import { sendEmail } from "../util/sendEmail";
 
 const UserCreateInput = builder.inputType("UserCreateInput", {
   fields: (t) => ({
     username: t.string({ required: true }),
+    email: t.string({ required: true }),
+    password: t.string({ required: true }),
+  }),
+});
+
+const UserLoginInput = builder.inputType("UserLoginInput", {
+  fields: (t) => ({
+    usernameOrEmail: t.string({ required: true }),
     password: t.string({ required: true }),
   }),
 });
@@ -15,6 +24,7 @@ builder.prismaObject("User", {
   fields: (t) => ({
     id: t.exposeID("id"),
     username: t.exposeString("username"),
+    email: t.exposeString("email"),
     createdAt: t.string({
       resolve: (parent) => parent.createdAt.toISOString(),
     }),
@@ -86,22 +96,37 @@ builder.mutationFields(
           required: true,
         }),
       },
-      resolve: async (_, __, { input: { username, password } }, { req }) => {
+      resolve: async (
+        _,
+        __,
+        { input: { username, email, password } },
+        { req },
+      ) => {
         if (username.length <= 0) {
           throw new Error("Username cannot be empty");
         }
         if (password.length <= 0) {
           throw new Error("Password cannot be empty");
         }
+        if (email.length <= 0) {
+          throw new Error("Email cannot be empty");
+        }
+        if (!email.includes("@")) {
+          throw new Error("Invalid email");
+        }
 
         if (await db.user.findUnique({ where: { username } })) {
           throw new Error("Username already taken");
+        }
+        if (await db.user.findUnique({ where: { email } })) {
+          throw new Error("Email already taken");
         }
 
         const hashedPassword = await argon2.hash(password);
         const user = await db.user.create({
           data: {
             username,
+            email,
             password: hashedPassword,
           },
         });
@@ -120,26 +145,34 @@ builder.mutationFields(
       },
       args: {
         input: t.arg({
-          type: UserCreateInput,
+          type: UserLoginInput,
           required: true,
         }),
       },
-      resolve: async (_, __, { input: { username, password } }, { req }) => {
-        if (username.length <= 0) {
+      resolve: async (
+        _,
+        __,
+        { input: { usernameOrEmail, password } },
+        { req },
+      ) => {
+        if (usernameOrEmail.length <= 0) {
           throw new Error("Username cannot be empty");
         }
         if (password.length <= 0) {
           throw new Error("Password cannot be empty");
         }
 
-        const user = await db.user.findUnique({
-          where: {
-            username,
-          },
+        let user;
+
+        user = await db.user.findUnique({
+          where: usernameOrEmail.includes("@")
+            ? { email: usernameOrEmail }
+            : { username: usernameOrEmail },
         });
         if (!user) {
-          throw new Error("User not found");
+          throw new Error("Invalid username or email");
         }
+
         const valid = await argon2.verify(user.password, password);
         if (!valid) {
           throw new Error("Invalid password");
@@ -156,6 +189,33 @@ builder.mutationFields(
       resolve: (_, __, { req, res }) => {
         req.session.destroy();
         res.clearCookie(COOKIE_NAME);
+        return true;
+      },
+    }),
+    forgotPassword: t.field({
+      type: "Boolean",
+      args: {
+        email: t.arg.string({ required: true }),
+      },
+      resolve: async (_, { email }, __) => {
+        const user = await db.user.findUnique({
+          where: {
+            email,
+          },
+        });
+        if (!user) {
+          return false;
+        }
+
+        await sendEmail(
+          {
+            to: email,
+            subject: "Reset password",
+            html:
+              `<a href="http://localhost:3000/change-password/${user.id}">Reset password</a>`,
+          },
+        );
+
         return true;
       },
     }),

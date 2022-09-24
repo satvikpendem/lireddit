@@ -902,6 +902,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:^6.4.6":
+  version: 6.4.6
+  resolution: "@types/nodemailer@npm:6.4.6"
+  dependencies:
+    "@types/node": "*"
+  checksum: c5ba1b83a28eb13778c54333ebe5fdd40555ce6df9dea672acb5682f872e83cae2e538ceeb64c7b064a2c7e7dc836d5a250ec7174795c5a61cb3a3fb90f3dceb
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
@@ -2541,6 +2550,7 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/express-session": ^1.17.5
     "@types/node": ^18.7.18
+    "@types/nodemailer": ^6.4.6
     "@types/validator": ^13.7.6
     "@yarnpkg/pnpify": ^4.0.0-rc.20
     apollo-server-express: ^3.10.2
@@ -2551,6 +2561,7 @@ __metadata:
     express: ^4.18.1
     graphql: ^15
     iron-session: ^6.2.1
+    nodemailer: ^6.7.8
     nodemon: ^2.0.19
     pg: ^8.8.0
     prisma: 4.3.1
@@ -2884,6 +2895,13 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 1437fa4a879b5b9010604128e8da8609b57c66034262087539ee04a8b764b8436af2be01bab66f8fc729a3adba2dcc21b10a32b9f552696c3fa8cd657d134fc4
+  languageName: node
+  linkType: hard
+
+"nodemailer@npm:^6.7.8":
+  version: 6.7.8
+  resolution: "nodemailer@npm:6.7.8"
+  checksum: 92d4a1d48813825989c7f5fc7cbcf5ba8d1a8acf8e10e420b4aa7670ade7abd0c543cc6cf8adf14e44c62552e26efb37b2a15a9af90a515fa90b40ffc71c433e
   languageName: node
   linkType: hard
 

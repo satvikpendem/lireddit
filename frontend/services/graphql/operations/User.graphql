@@ -30,7 +30,7 @@ mutation Register($register: UserCreateInput!) {
   }
 }
 
-mutation Login($login: UserCreateInput!) {
+mutation Login($login: UserLoginInput!) {
   login(input: $login) {
     ... on Error {
       error
@@ -38,8 +38,6 @@ mutation Login($login: UserCreateInput!) {
     ... on MutationLoginSuccess {
       data {
         ...RegularUser
-        # id
-        # username
       }
     }
   }

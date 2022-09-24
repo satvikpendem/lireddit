@@ -8,7 +8,8 @@ import {
   LoginMutationVariables,
 } from "../../services/graphql/generated/graphql";
 import AuthenticationForm, {
-  FormValues,
+  LoginFormValues,
+  RegisterFormValues,
 } from "../AuthenticationForm/AuthenticationForm";
 
 import { _base } from "./Login.css";
@@ -27,10 +28,12 @@ const Login: React.FC = () => {
     }
   }, [data?.login?.__typename]);
 
-  const onSubmit = async ({ username, password }: FormValues) => {
+  const onSubmit = async (
+    { usernameOrEmail, password }: LoginFormValues,
+  ) => {
     login({
       login: {
-        username,
+        usernameOrEmail,
         password,
       },
     });

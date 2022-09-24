@@ -129,7 +129,7 @@ const AuthenticationForm: React.FC<Props> = ({
               className={_field}
             />
             <AnimatedToggle
-              condition={errors.usernameOrEmail?.message === "register"}
+              condition={errors.usernameOrEmail?.type === "required"}
             >
               <span className={_error}>Username or email is required</span>
             </AnimatedToggle>

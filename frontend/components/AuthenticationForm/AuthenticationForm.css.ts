@@ -25,19 +25,24 @@ export const _error = style({
   fontStyle: "italic",
 });
 
-export const _submit = style({
+export const _primaryButton = style({
   height: "2rem",
+  width: "100%",
   backgroundColor: "#1b1b1b",
   color: "white",
   fontWeight: "bold",
-  border: "none",
   borderRadius: "5px",
   marginTop: "10px",
-  pointerEvents: "auto",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "0.5rem",
+  cursor: "pointer",
+  transition: "all 0.2s ease-in-out",
+  border: "2px solid black",
+  ":hover": {
+    color: "black",
+    backgroundColor: "white",
+  },
 });
 
 const rotate = keyframes({
@@ -53,3 +58,20 @@ export const _loading = style({
   height: "20px",
   animation: `${rotate} 2s linear infinite`,
 });
+
+export const _secondaryButtonGroup = style({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "0.5rem",
+});
+
+export const _secondaryButton = style([_primaryButton, {
+  color: "black",
+  backgroundColor: "white",
+  border: "2px solid black",
+  ":hover": {
+    backgroundColor: "black",
+    color: "white",
+  },
+}]);

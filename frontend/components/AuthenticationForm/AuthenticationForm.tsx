@@ -7,9 +7,11 @@ import {
   _field,
   _label,
   _loading,
+  _primaryButton,
   _root,
+  _secondaryButton,
+  _secondaryButtonGroup,
   _spacer,
-  _submit,
 } from "./AuthenticationForm.css";
 import {
   ChangePasswordMutation,
@@ -18,6 +20,7 @@ import {
   RegisterMutation,
 } from "../../services/graphql/generated/graphql";
 import AnimatedToggle from "../AnimatedToggle/AnimatedToggle";
+import Link from "next/link";
 
 type AuthenticationFormType =
   | "register"
@@ -261,7 +264,7 @@ const AuthenticationForm: React.FC<Props> = ({
       )}
       <motion.button
         type="submit"
-        className={_submit}
+        className={_primaryButton}
         initial={{ y: 0, scale: 1 }}
         whileTap={{ y: 2, scale: 0.95 }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
@@ -290,6 +293,19 @@ const AuthenticationForm: React.FC<Props> = ({
           {successMessage()}
         </span>
       </AnimatedToggle>
+      <div className={_spacer} />
+
+      {type === "login" &&
+        (
+          <div className={_secondaryButtonGroup}>
+            <Link href="/forgot-password">
+              <button className={_secondaryButton}>Forgot Password?</button>
+            </Link>
+            <Link href="/register">
+              <button className={_secondaryButton}>Register</button>
+            </Link>
+          </div>
+        )}
     </form>
   );
 };

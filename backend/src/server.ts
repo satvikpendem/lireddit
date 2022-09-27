@@ -1,10 +1,12 @@
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
+import Redis from "ioredis";
 
 import { schema } from "./schema";
 import session from "./session";
 import { PROD } from "./constants";
 import { db } from "./db";
+import { Context } from "./types";
 
 export async function startServer() {
   db.user.deleteMany({});
@@ -17,11 +19,13 @@ export async function startServer() {
   // This is a workaround for Apollo Studio to work with cookies.
   !PROD && app.set("trust proxy", 1);
 
+  const redis = new Redis();
+
   const server = new ApolloServer({
     schema,
     introspection: !PROD,
     csrfPrevention: PROD,
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }): Context => ({ req, res, redis }),
   });
   await server.start();
 

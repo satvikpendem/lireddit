@@ -2,8 +2,8 @@ import Login from "../components/Login/Login";
 
 interface Props {}
 
-const RegisterPage: React.FC<Props> = () => {
+const LoginPage: React.FC<Props> = () => {
   return <Login />;
 };
 
-export default RegisterPage;
+export default LoginPage;

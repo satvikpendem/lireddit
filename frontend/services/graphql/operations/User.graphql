@@ -43,6 +43,35 @@ mutation Login($login: UserLoginInput!) {
   }
 }
 
+mutation ChangePassword($input: UserChangePasswordInput!) {
+  changePassword(input: $input) {
+    ... on MutationChangePasswordSuccess {
+      data
+    }
+    ... on Error {
+      error
+    }
+  }
+}
+
+mutation ForgotPassword($input: UserSendForgotPasswordEmailInput!) {
+  forgotPassword(input: $input) {
+    ... on MutationForgotPasswordSuccess {
+      data
+    }
+    ... on Error {
+      error
+    }
+  }
+}
+
 mutation Logout {
-  logout
+  logout {
+    ... on Error {
+      error
+    }
+    ... on MutationLogoutSuccess {
+      data
+    }
+  }
 }

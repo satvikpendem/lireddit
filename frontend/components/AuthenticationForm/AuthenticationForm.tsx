@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
 import * as LabelPrimitive from "@radix-ui/react-label";
 
 import {
@@ -13,27 +12,43 @@ import {
   _submit,
 } from "./AuthenticationForm.css";
 import {
+  ChangePasswordMutation,
+  ForgotPasswordMutation,
   LoginMutation,
   RegisterMutation,
 } from "../../services/graphql/generated/graphql";
 import AnimatedToggle from "../AnimatedToggle/AnimatedToggle";
 
-type AuthenticationFormType = "register" | "login";
+type AuthenticationFormType =
+  | "register"
+  | "login"
+  | "forgot-password"
+  | "change-password";
 
-interface BaseFormValues {
+export interface RegisterFormValues {
   email: string;
+  username: string;
   password: string;
 }
 
-export interface RegisterFormValues extends BaseFormValues {
-  username: string;
+export interface LoginFormValues {
+  usernameOrEmail: string;
+  password: string;
 }
 
-export interface LoginFormValues extends BaseFormValues {
+export interface ForgotPasswordFormValues {
   usernameOrEmail: string;
 }
 
-type FormValues = RegisterFormValues & LoginFormValues;
+export interface ChangePasswordFormValues {
+  password: string;
+}
+
+type FormValues =
+  & RegisterFormValues
+  & LoginFormValues
+  & ForgotPasswordFormValues
+  & ChangePasswordFormValues;
 
 interface BaseProps {
   type: AuthenticationFormType;
@@ -51,7 +66,21 @@ interface LoginProps extends BaseProps {
   data: LoginMutation | null | undefined;
 }
 
-type Props = RegisterProps | LoginProps;
+interface ChangePasswordProps extends BaseProps {
+  type: "change-password";
+  data: ChangePasswordMutation | null | undefined;
+}
+
+interface ForgotPasswordProps extends BaseProps {
+  type: "forgot-password";
+  data: ForgotPasswordMutation | null | undefined;
+}
+
+type Props =
+  | RegisterProps
+  | LoginProps
+  | ChangePasswordProps
+  | ForgotPasswordProps;
 
 const Label = LabelPrimitive.Root;
 
@@ -70,31 +99,51 @@ const AuthenticationForm: React.FC<Props> = ({
   const isSuccessful = () => {
     if (type === "register") {
       return data?.register?.__typename === "MutationRegisterSuccess";
-    } else {
+    } else if (type === "login") {
       return data?.login?.__typename === "MutationLoginSuccess";
+    } else if (type === "change-password") {
+      return data?.changePassword.__typename ===
+        "MutationChangePasswordSuccess";
+    } else if (type === "forgot-password") {
+      return data?.forgotPassword.__typename ===
+        "MutationForgotPasswordSuccess";
     }
+    return false;
   };
 
   const successMessage = () => {
-    let username = "";
     if (type === "register") {
       if (data?.register?.__typename === "MutationRegisterSuccess") {
-        username = data.register.data.username;
+        const username = data.register.data.username;
+        return `Welcome ${username}!`;
       }
-    } else {
+    } else if (type === "login") {
       if (data?.login?.__typename === "MutationLoginSuccess") {
-        username = data.login.data.username;
+        const username = data.login.data.username;
+        return `Welcome ${username}!`;
+      }
+    } else if (type === "change-password") {
+      if (data?.changePassword.__typename === "MutationChangePasswordSuccess") {
+        return `Your password has been changed!`;
+      }
+    } else if (type === "forgot-password") {
+      if (data?.forgotPassword.__typename === "MutationForgotPasswordSuccess") {
+        return `Check your email for a link to reset your password!`;
       }
     }
-    return `Welcome ${username}!`;
   };
 
   const isFailure = () => {
     if (type === "register") {
       return data?.register?.__typename === "Error";
-    } else {
+    } else if (type === "login") {
       return data?.login?.__typename === "Error";
+    } else if (type === "change-password") {
+      return data?.changePassword.__typename === "Error";
+    } else if (type === "forgot-password") {
+      return data?.forgotPassword.__typename === "Error";
     }
+    return false;
   };
 
   const failureMessage = () => {
@@ -102,20 +151,41 @@ const AuthenticationForm: React.FC<Props> = ({
       if (data?.register?.__typename === "Error") {
         return data.register.error;
       }
-    } else {
+    } else if (type === "login") {
       if (data?.login?.__typename === "Error") {
         return data.login.error;
       }
+    } else if (type === "change-password") {
+      if (data?.changePassword.__typename === "Error") {
+        return data.changePassword.error;
+      }
+    } else if (type === "forgot-password") {
+      if (data?.forgotPassword.__typename === "Error") {
+        return data.forgotPassword.error;
+      }
     }
-    return "";
   };
+
+  function submitButton() {
+    if (type === "register") {
+      return "Register";
+    } else if (type === "login") {
+      return "Login";
+    } else if (type === "change-password") {
+      return "Change Password";
+    } else if (type === "forgot-password") {
+      return "Send Reset Email";
+    }
+
+    return "Submit";
+  }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={_root}
     >
-      {type === "login" &&
+      {(type === "login" || type === "forgot-password") &&
         (
           <>
             <Label htmlFor="usernameOrEmail" className={_label}>
@@ -170,21 +240,25 @@ const AuthenticationForm: React.FC<Props> = ({
         </>
       )}
 
-      <Label htmlFor="password" className={_label}>
-        Password
-      </Label>
-      <input
-        placeholder="Password"
-        type={"password"}
-        {...register("password", {
-          required: true,
-        })}
-        className={_field}
-      />
-      <AnimatedToggle condition={errors.password?.type === "required"}>
-        <span className={_error}>Password is required</span>
-      </AnimatedToggle>
-      <div className={_spacer} />
+      {type !== "forgot-password" && (
+        <>
+          <Label htmlFor="password" className={_label}>
+            Password
+          </Label>
+          <input
+            placeholder="Password"
+            type={"password"}
+            {...register("password", {
+              required: true,
+            })}
+            className={_field}
+          />
+          <AnimatedToggle condition={errors.password?.type === "required"}>
+            <span className={_error}>Password is required</span>
+          </AnimatedToggle>
+          <div className={_spacer} />
+        </>
+      )}
       <motion.button
         type="submit"
         className={_submit}
@@ -197,7 +271,11 @@ const AuthenticationForm: React.FC<Props> = ({
           {(isSubmitting || loading) &&
             <div className={_loading} />}
           {!(isSubmitting || loading) &&
-            <span>{type === "login" ? "Login" : "Register"}</span>}
+            (
+              <span>
+                {submitButton()}
+              </span>
+            )}
         </AnimatePresence>
       </motion.button>
       <AnimatedToggle condition={isFailure()}>

@@ -9,7 +9,6 @@ import {
 } from "../../services/graphql/generated/graphql";
 import AuthenticationForm, {
   LoginFormValues,
-  RegisterFormValues,
 } from "../AuthenticationForm/AuthenticationForm";
 
 import { _base } from "./Login.css";

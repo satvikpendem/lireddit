@@ -1,7 +1,8 @@
 import argon2 from "argon2";
+import { v4 } from "uuid";
 
 import { builder } from "../builder";
-import { COOKIE_NAME } from "../constants";
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "../constants";
 import { db } from "../db";
 import { sendEmail } from "../util/sendEmail";
 
@@ -16,6 +17,22 @@ const UserCreateInput = builder.inputType("UserCreateInput", {
 const UserLoginInput = builder.inputType("UserLoginInput", {
   fields: (t) => ({
     usernameOrEmail: t.string({ required: true }),
+    password: t.string({ required: true }),
+  }),
+});
+
+const UserSendForgotPasswordEmailInput = builder.inputType(
+  "UserSendForgotPasswordEmailInput",
+  {
+    fields: (t) => ({
+      usernameOrEmail: t.string({ required: true }),
+    }),
+  },
+);
+
+const UserChangePasswordInput = builder.inputType("UserChangePasswordInput", {
+  fields: (t) => ({
+    token: t.string({ required: true }),
     password: t.string({ required: true }),
   }),
 });
@@ -162,9 +179,7 @@ builder.mutationFields(
           throw new Error("Password cannot be empty");
         }
 
-        let user;
-
-        user = await db.user.findUnique({
+        const user = await db.user.findUnique({
           where: usernameOrEmail.includes("@")
             ? { email: usernameOrEmail }
             : { username: usernameOrEmail },
@@ -186,33 +201,97 @@ builder.mutationFields(
     }),
     logout: t.field({
       type: "Boolean",
+      errors: {
+        types: [Error],
+      },
       resolve: (_, __, { req, res }) => {
         req.session.destroy();
         res.clearCookie(COOKIE_NAME);
         return true;
       },
     }),
-    forgotPassword: t.field({
+    changePassword: t.field({
       type: "Boolean",
-      args: {
-        email: t.arg.string({ required: true }),
+      errors: {
+        types: [Error],
       },
-      resolve: async (_, { email }, __) => {
+      args: {
+        input: t.arg({
+          type: UserChangePasswordInput,
+          required: true,
+        }),
+      },
+      resolve: async (_, { input: { token, password } }, { redis }) => {
+        if (password.length <= 0) {
+          throw new Error("Password cannot be empty");
+        }
+
+        const key = `${FORGOT_PASSWORD_PREFIX}${token}`;
+        const userId = await redis.get(key);
+        if (!userId) {
+          throw new Error("Invalid token");
+        }
+
+        const id = parseInt(userId);
         const user = await db.user.findUnique({
           where: {
-            email,
+            id,
           },
         });
         if (!user) {
-          return false;
+          throw new Error("Invalid token");
         }
+
+        await db.user.update({
+          where: {
+            id,
+          },
+          data: {
+            password: await argon2.hash(password),
+          },
+        });
+
+        await redis.del(key);
+
+        return true;
+      },
+    }),
+    forgotPassword: t.field({
+      type: "Boolean",
+      errors: {
+        types: [Error],
+      },
+      args: {
+        input: t.arg({
+          type: UserSendForgotPasswordEmailInput,
+          required: true,
+        }),
+      },
+      resolve: async (_, { input: { usernameOrEmail } }, { redis }) => {
+        const user = await db.user.findUnique({
+          where: usernameOrEmail.includes("@")
+            ? { email: usernameOrEmail }
+            : { username: usernameOrEmail },
+        });
+        if (!user) {
+          throw new Error("Invalid username or email");
+        }
+
+        const token = v4();
+
+        await redis.set(
+          `${FORGOT_PASSWORD_PREFIX}${token}`,
+          user.id,
+          "EX",
+          1000 * 60 * 60 * 24 * 3, // 3 days
+        );
 
         await sendEmail(
           {
-            to: email,
+            to: user.email,
             subject: "Reset password",
             html:
-              `<a href="http://localhost:3000/change-password/${user.id}">Reset password</a>`,
+              `<a href="http://localhost:3000/change-password/${token}">Reset password</a>`,
           },
         );
 

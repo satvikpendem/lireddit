@@ -23,13 +23,13 @@ export type Error = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: MutationChangePasswordResult;
-  createPost?: Maybe<Post>;
-  deletePost?: Maybe<Post>;
+  createPost?: Maybe<MutationCreatePostResult>;
+  deletePost?: Maybe<MutationDeletePostResult>;
   forgotPassword: MutationForgotPasswordResult;
   login?: Maybe<MutationLoginResult>;
   logout: MutationLogoutResult;
   register?: Maybe<MutationRegisterResult>;
-  updatePost?: Maybe<Post>;
+  updatePost?: Maybe<MutationUpdatePostResult>;
 };
 
 
@@ -39,12 +39,12 @@ export type MutationChangePasswordArgs = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
+  input: PostInput;
 };
 
 
 export type MutationDeletePostArgs = {
-  id: Scalars['ID'];
+  input: PostInputWithId;
 };
 
 
@@ -64,8 +64,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationUpdatePostArgs = {
-  id: Scalars['ID'];
-  title: Scalars['String'];
+  input: PostInputWithId;
 };
 
 export type MutationChangePasswordResult = Error | MutationChangePasswordSuccess;
@@ -73,6 +72,20 @@ export type MutationChangePasswordResult = Error | MutationChangePasswordSuccess
 export type MutationChangePasswordSuccess = {
   __typename?: 'MutationChangePasswordSuccess';
   data: Scalars['Boolean'];
+};
+
+export type MutationCreatePostResult = Error | MutationCreatePostSuccess;
+
+export type MutationCreatePostSuccess = {
+  __typename?: 'MutationCreatePostSuccess';
+  data: Post;
+};
+
+export type MutationDeletePostResult = Error | MutationDeletePostSuccess;
+
+export type MutationDeletePostSuccess = {
+  __typename?: 'MutationDeletePostSuccess';
+  data: Post;
 };
 
 export type MutationForgotPasswordResult = Error | MutationForgotPasswordSuccess;
@@ -103,12 +116,32 @@ export type MutationRegisterSuccess = {
   data: User;
 };
 
+export type MutationUpdatePostResult = Error | MutationUpdatePostSuccess;
+
+export type MutationUpdatePostSuccess = {
+  __typename?: 'MutationUpdatePostSuccess';
+  data: Post;
+};
+
 export type Post = {
   __typename?: 'Post';
+  author: User;
+  content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type PostInput = {
+  content?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
+};
+
+export type PostInputWithId = {
+  content?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  title: Scalars['String'];
 };
 
 export type Query = {
@@ -171,6 +204,13 @@ export type UserSendForgotPasswordEmailInput = {
   usernameOrEmail: Scalars['String'];
 };
 
+export type CreatePostMutationVariables = Exact<{
+  input: PostInput;
+}>;
+
+
+export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'Error', error: string } | { __typename?: 'MutationCreatePostSuccess', data: { __typename?: 'Post', id: string, title: string, content: string, author: { __typename?: 'User', createdAt: string, email: string, id: string, updatedAt: string, username: string } } } | null };
+
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
@@ -221,10 +261,13 @@ export type WithTypename<T extends { __typename?: any }> = Partial<T> & { __type
 export type GraphCacheKeysConfig = {
   Error?: (data: WithTypename<Error>) => null | string,
   MutationChangePasswordSuccess?: (data: WithTypename<MutationChangePasswordSuccess>) => null | string,
+  MutationCreatePostSuccess?: (data: WithTypename<MutationCreatePostSuccess>) => null | string,
+  MutationDeletePostSuccess?: (data: WithTypename<MutationDeletePostSuccess>) => null | string,
   MutationForgotPasswordSuccess?: (data: WithTypename<MutationForgotPasswordSuccess>) => null | string,
   MutationLoginSuccess?: (data: WithTypename<MutationLoginSuccess>) => null | string,
   MutationLogoutSuccess?: (data: WithTypename<MutationLogoutSuccess>) => null | string,
   MutationRegisterSuccess?: (data: WithTypename<MutationRegisterSuccess>) => null | string,
+  MutationUpdatePostSuccess?: (data: WithTypename<MutationUpdatePostSuccess>) => null | string,
   Post?: (data: WithTypename<Post>) => null | string,
   User?: (data: WithTypename<User>) => null | string
 }
@@ -243,6 +286,12 @@ export type GraphCacheResolvers = {
   MutationChangePasswordSuccess?: {
     data?: GraphCacheResolver<WithTypename<MutationChangePasswordSuccess>, Record<string, never>, Scalars['Boolean'] | string>
   },
+  MutationCreatePostSuccess?: {
+    data?: GraphCacheResolver<WithTypename<MutationCreatePostSuccess>, Record<string, never>, WithTypename<Post> | string>
+  },
+  MutationDeletePostSuccess?: {
+    data?: GraphCacheResolver<WithTypename<MutationDeletePostSuccess>, Record<string, never>, WithTypename<Post> | string>
+  },
   MutationForgotPasswordSuccess?: {
     data?: GraphCacheResolver<WithTypename<MutationForgotPasswordSuccess>, Record<string, never>, Scalars['Boolean'] | string>
   },
@@ -255,7 +304,12 @@ export type GraphCacheResolvers = {
   MutationRegisterSuccess?: {
     data?: GraphCacheResolver<WithTypename<MutationRegisterSuccess>, Record<string, never>, WithTypename<User> | string>
   },
+  MutationUpdatePostSuccess?: {
+    data?: GraphCacheResolver<WithTypename<MutationUpdatePostSuccess>, Record<string, never>, WithTypename<Post> | string>
+  },
   Post?: {
+    author?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, WithTypename<User> | string>,
+    content?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>,
     id?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['ID'] | string>,
     title?: GraphCacheResolver<WithTypename<Post>, Record<string, never>, Scalars['String'] | string>,
@@ -272,25 +326,25 @@ export type GraphCacheResolvers = {
 
 export type GraphCacheOptimisticUpdaters = {
   changePassword?: GraphCacheOptimisticMutationResolver<MutationChangePasswordArgs, WithTypename<MutationChangePasswordResult>>,
-  createPost?: GraphCacheOptimisticMutationResolver<MutationCreatePostArgs, Maybe<WithTypename<Post>>>,
-  deletePost?: GraphCacheOptimisticMutationResolver<MutationDeletePostArgs, Maybe<WithTypename<Post>>>,
+  createPost?: GraphCacheOptimisticMutationResolver<MutationCreatePostArgs, Maybe<WithTypename<MutationCreatePostResult>>>,
+  deletePost?: GraphCacheOptimisticMutationResolver<MutationDeletePostArgs, Maybe<WithTypename<MutationDeletePostResult>>>,
   forgotPassword?: GraphCacheOptimisticMutationResolver<MutationForgotPasswordArgs, WithTypename<MutationForgotPasswordResult>>,
   login?: GraphCacheOptimisticMutationResolver<MutationLoginArgs, Maybe<WithTypename<MutationLoginResult>>>,
   logout?: GraphCacheOptimisticMutationResolver<Record<string, never>, WithTypename<MutationLogoutResult>>,
   register?: GraphCacheOptimisticMutationResolver<MutationRegisterArgs, Maybe<WithTypename<MutationRegisterResult>>>,
-  updatePost?: GraphCacheOptimisticMutationResolver<MutationUpdatePostArgs, Maybe<WithTypename<Post>>>
+  updatePost?: GraphCacheOptimisticMutationResolver<MutationUpdatePostArgs, Maybe<WithTypename<MutationUpdatePostResult>>>
 };
 
 export type GraphCacheUpdaters = {
   Mutation?: {
     changePassword?: GraphCacheUpdateResolver<{ changePassword: WithTypename<MutationChangePasswordResult> }, MutationChangePasswordArgs>,
-    createPost?: GraphCacheUpdateResolver<{ createPost: Maybe<WithTypename<Post>> }, MutationCreatePostArgs>,
-    deletePost?: GraphCacheUpdateResolver<{ deletePost: Maybe<WithTypename<Post>> }, MutationDeletePostArgs>,
+    createPost?: GraphCacheUpdateResolver<{ createPost: Maybe<WithTypename<MutationCreatePostResult>> }, MutationCreatePostArgs>,
+    deletePost?: GraphCacheUpdateResolver<{ deletePost: Maybe<WithTypename<MutationDeletePostResult>> }, MutationDeletePostArgs>,
     forgotPassword?: GraphCacheUpdateResolver<{ forgotPassword: WithTypename<MutationForgotPasswordResult> }, MutationForgotPasswordArgs>,
     login?: GraphCacheUpdateResolver<{ login: Maybe<WithTypename<MutationLoginResult>> }, MutationLoginArgs>,
     logout?: GraphCacheUpdateResolver<{ logout: WithTypename<MutationLogoutResult> }, Record<string, never>>,
     register?: GraphCacheUpdateResolver<{ register: Maybe<WithTypename<MutationRegisterResult>> }, MutationRegisterArgs>,
-    updatePost?: GraphCacheUpdateResolver<{ updatePost: Maybe<WithTypename<Post>> }, MutationUpdatePostArgs>
+    updatePost?: GraphCacheUpdateResolver<{ updatePost: Maybe<WithTypename<MutationUpdatePostResult>> }, MutationUpdatePostArgs>
   },
   Subscription?: {},
 };
@@ -304,6 +358,7 @@ export type GraphCacheConfig = {
   storage?: GraphCacheStorageAdapter
 };
 export const RegularUserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RegularUser"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]} as unknown as DocumentNode<RegularUserFragment, unknown>;
+export const CreatePostDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreatePost"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PostInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createPost"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Error"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MutationCreatePostSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreatePostMutation, CreatePostMutationVariables>;
 export const UsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<UsersQuery, UsersQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const RegisterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"register"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"register"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Error"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"MutationRegisterSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RegularUser"}}]}}]}}]}}]}},...RegularUserFragmentDoc.definitions]} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
@@ -323,6 +378,14 @@ export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"Operati
       "Error",
       "MutationChangePasswordSuccess"
     ],
+    "MutationCreatePostResult": [
+      "Error",
+      "MutationCreatePostSuccess"
+    ],
+    "MutationDeletePostResult": [
+      "Error",
+      "MutationDeletePostSuccess"
+    ],
     "MutationForgotPasswordResult": [
       "Error",
       "MutationForgotPasswordSuccess"
@@ -338,6 +401,10 @@ export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"Operati
     "MutationRegisterResult": [
       "Error",
       "MutationRegisterSuccess"
+    ],
+    "MutationUpdatePostResult": [
+      "Error",
+      "MutationUpdatePostSuccess"
     ]
   }
 };

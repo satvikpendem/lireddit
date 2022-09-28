@@ -92,7 +92,10 @@ exports.Prisma.PostScalarFieldEnum = makeEnum({
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  title: 'title'
+  title: 'title',
+  content: 'content',
+  authorId: 'authorId',
+  points: 'points'
 });
 
 exports.Prisma.QueryMode = makeEnum({

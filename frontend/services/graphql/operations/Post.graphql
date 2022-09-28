@@ -1,0 +1,21 @@
+mutation CreatePost($input: PostInput!) {
+  createPost(input: $input) {
+    ... on Error {
+      error
+    }
+    ... on MutationCreatePostSuccess {
+      data {
+        id
+        title
+        content
+        author {
+          createdAt
+          email
+          id
+          updatedAt
+          username
+        }
+      }
+    }
+  }
+}

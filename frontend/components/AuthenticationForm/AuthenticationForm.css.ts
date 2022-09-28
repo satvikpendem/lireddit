@@ -9,6 +9,7 @@ export const _root = style({
 export const _field = style({
   height: "2rem",
   padding: "0.5rem",
+  width: "100%",
 });
 
 export const _spacer = style({
@@ -37,12 +38,7 @@ export const _primaryButton = style({
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  transition: "all 0.2s ease-in-out",
   border: "2px solid black",
-  ":hover": {
-    color: "black",
-    backgroundColor: "white",
-  },
 });
 
 const rotate = keyframes({

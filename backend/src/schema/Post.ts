@@ -1,96 +1,148 @@
 import { builder } from "../builder";
 import { db } from "../db";
 
+const PostInput = builder.inputType("PostInput", {
+  fields: (t) => ({
+    title: t.string({ required: true }),
+    content: t.string(),
+  }),
+});
+
+const PostInputWithId = builder.inputType("PostInputWithId", {
+  fields: (t) => ({
+    id: t.id({ required: true }),
+    title: t.string({ required: true }),
+    content: t.string(),
+  }),
+});
+
 builder.prismaObject("Post", {
-	fields: (t) => ({
-		id: t.exposeID("id"),
-		title: t.exposeString("title"),
-		createdAt: t.string({
-			resolve: (parent) => parent.createdAt.toISOString(),
-		}),
-		updatedAt: t.string({
-			resolve: (parent) => parent.updatedAt.toISOString(),
-		}),
-	}),
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    title: t.exposeString("title"),
+    createdAt: t.string({
+      resolve: ({ createdAt }) => createdAt.toISOString(),
+    }),
+    updatedAt: t.string({
+      resolve: ({ updatedAt }) => updatedAt.toISOString(),
+    }),
+    content: t.string({
+      resolve: ({ content }) => content || "",
+    }),
+    author: t.relation("author"),
+  }),
 });
 
 builder.queryFields(
-	(t) => ({
-		posts: t.prismaField({
-			type: ["Post"],
-			nullable: true,
-			args: {
-				take: t.arg.int(),
-				skip: t.arg.int(),
-			},
-			resolve: (query, _, args) =>
-				db.post.findMany({
-					...query,
-					take: args.take ?? 10,
-					skip: args.skip ?? 0,
-				}),
-		}),
-		post: t.prismaField({
-			type: "Post",
-			nullable: true,
-			args: {
-				id: t.arg.id({ required: true }),
-			},
-			resolve: (query, _, args) =>
-				db.post.findUnique({
-					...query,
-					where: {
-						id: Number.parseInt(String(args.id)),
-					},
-				}),
-		}),
-	}),
+  (t) => ({
+    posts: t.prismaField({
+      type: ["Post"],
+      nullable: true,
+      args: {
+        take: t.arg.int(),
+        skip: t.arg.int(),
+      },
+      resolve: (query, _, args) =>
+        db.post.findMany({
+          ...query,
+          take: args.take ?? 10,
+          skip: args.skip ?? 0,
+        }),
+    }),
+    post: t.prismaField({
+      type: "Post",
+      nullable: true,
+      args: {
+        id: t.arg.id({ required: true }),
+      },
+      resolve: (query, _, args) =>
+        db.post.findUnique({
+          ...query,
+          where: {
+            id: Number.parseInt(String(args.id)),
+          },
+        }),
+    }),
+  }),
 );
 
 builder.mutationFields(
-	(t) => ({
-		createPost: t.prismaField({
-			type: "Post",
-			nullable: true,
-			args: {
-				title: t.arg.string({ required: true }),
-			},
-			resolve: (_, __, { title }) =>
-				db.post.create({
-					data: {
-						title,
-					},
-				}),
-		}),
-		updatePost: t.prismaField({
-			type: "Post",
-			nullable: true,
-			args: {
-				id: t.arg.id({ required: true }),
-				title: t.arg.string({ required: true }),
-			},
-			resolve: (_, __, { id, title }) =>
-				db.post.update({
-					where: {
-						id: Number.parseInt(String(id)),
-					},
-					data: {
-						title,
-					},
-				}),
-		}),
-		deletePost: t.prismaField({
-			type: "Post",
-			nullable: true,
-			args: {
-				id: t.arg.id({ required: true }),
-			},
-			resolve: (_, __, { id }) =>
-				db.post.delete({
-					where: {
-						id: Number.parseInt(String(id)),
-					},
-				}),
-		}),
-	}),
+  (t) => ({
+    createPost: t.prismaField({
+      type: "Post",
+      nullable: true,
+      errors: {
+        types: [Error],
+      },
+      args: {
+        input: t.arg({ type: PostInput, required: true }),
+      },
+      resolve: async (
+        _,
+        __,
+        { input: { title } },
+        { req: { session: { userId: id } } },
+      ) => {
+        if (!id) {
+          throw new Error("Not authenticated");
+        }
+
+        const user = await db.user.findUnique({
+          where: {
+            id,
+          },
+        });
+
+        if (!user) {
+          throw new Error("Author not found");
+        }
+
+        return db.post.create({
+          data: {
+            title,
+            author: {
+              connect: {
+                id,
+              },
+            },
+          },
+        });
+      },
+    }),
+    updatePost: t.prismaField({
+      type: "Post",
+      nullable: true,
+      errors: {
+        types: [Error],
+      },
+      args: {
+        input: t.arg({ type: PostInputWithId, required: true }),
+      },
+      resolve: (_, __, { input: { id, title } }) =>
+        db.post.update({
+          where: {
+            id: Number.parseInt(String(id)),
+          },
+          data: {
+            title,
+          },
+        }),
+    }),
+    deletePost: t.prismaField({
+      type: "Post",
+      nullable: true,
+      errors: {
+        types: [Error],
+      },
+      args: {
+        input: t.arg({ type: PostInputWithId, required: true }),
+      },
+      resolve: (_, __, { input: { id } }) =>
+        db.post.delete({
+          where: {
+            id: Number.parseInt(String(id)),
+          },
+        }),
+    }),
+  }),
 );

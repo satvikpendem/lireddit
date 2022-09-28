@@ -34,6 +34,9 @@ export type Post = {
   createdAt: Date
   updatedAt: Date
   title: string
+  content: string | null
+  authorId: number
+  points: number
 }
 
 
@@ -829,6 +832,54 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type UserCountOutputType
+   */
+
+
+  export type UserCountOutputType = {
+    posts: number
+  }
+
+  export type UserCountOutputTypeSelect = {
+    posts?: boolean
+  }
+
+  export type UserCountOutputTypeGetPayload<
+    S extends boolean | null | undefined | UserCountOutputTypeArgs,
+    U = keyof S
+      > = S extends true
+        ? UserCountOutputType
+    : S extends undefined
+    ? never
+    : S extends UserCountOutputTypeArgs
+    ?'include' extends U
+    ? UserCountOutputType 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+    P extends keyof UserCountOutputType ? UserCountOutputType[P] : never
+  } 
+    : UserCountOutputType
+  : UserCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     * 
+    **/
+    select?: UserCountOutputTypeSelect | null
+  }
+
+
 
   /**
    * Models
@@ -1047,6 +1098,13 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     password?: boolean
+    posts?: boolean | PostFindManyArgs
+    _count?: boolean | UserCountOutputTypeArgs
+  }
+
+  export type UserInclude = {
+    posts?: boolean | PostFindManyArgs
+    _count?: boolean | UserCountOutputTypeArgs
   }
 
   export type UserGetPayload<
@@ -1058,11 +1116,16 @@ export namespace Prisma {
     ? never
     : S extends UserArgs | UserFindManyArgs
     ?'include' extends U
-    ? User 
+    ? User  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'posts' ? Array < PostGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends '_count' ? UserCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-    P extends keyof User ? User[P] : never
+        P extends 'posts' ? Array < PostGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends '_count' ? UserCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof User ? User[P] : never
   } 
     : User
   : User
@@ -1437,6 +1500,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
+    posts<T extends PostFindManyArgs = {}>(args?: Subset<T, PostFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Post>>, PrismaPromise<Array<PostGetPayload<T>>>>;
 
     private get _document();
     /**
@@ -1475,6 +1539,11 @@ export namespace Prisma {
     **/
     select?: UserSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
      * Filter, which User to fetch.
      * 
     **/
@@ -1502,6 +1571,11 @@ export namespace Prisma {
      * 
     **/
     select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
     /**
      * Filter, which User to fetch.
      * 
@@ -1566,6 +1640,11 @@ export namespace Prisma {
     **/
     select?: UserSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
      * Filter, which Users to fetch.
      * 
     **/
@@ -1612,6 +1691,11 @@ export namespace Prisma {
     **/
     select?: UserSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
      * The data needed to create a User.
      * 
     **/
@@ -1641,6 +1725,11 @@ export namespace Prisma {
      * 
     **/
     select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
     /**
      * The data needed to update a User.
      * 
@@ -1681,6 +1770,11 @@ export namespace Prisma {
     **/
     select?: UserSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
      * The filter to search for the User to update in case it exists.
      * 
     **/
@@ -1707,6 +1801,11 @@ export namespace Prisma {
      * 
     **/
     select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
     /**
      * Filter which User to delete.
      * 
@@ -1748,6 +1847,11 @@ export namespace Prisma {
      * 
     **/
     select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
   }
 
 
@@ -1767,10 +1871,14 @@ export namespace Prisma {
 
   export type PostAvgAggregateOutputType = {
     id: number | null
+    authorId: number | null
+    points: number | null
   }
 
   export type PostSumAggregateOutputType = {
     id: number | null
+    authorId: number | null
+    points: number | null
   }
 
   export type PostMinAggregateOutputType = {
@@ -1778,6 +1886,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     title: string | null
+    content: string | null
+    authorId: number | null
+    points: number | null
   }
 
   export type PostMaxAggregateOutputType = {
@@ -1785,6 +1896,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     title: string | null
+    content: string | null
+    authorId: number | null
+    points: number | null
   }
 
   export type PostCountAggregateOutputType = {
@@ -1792,16 +1906,23 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     title: number
+    content: number
+    authorId: number
+    points: number
     _all: number
   }
 
 
   export type PostAvgAggregateInputType = {
     id?: true
+    authorId?: true
+    points?: true
   }
 
   export type PostSumAggregateInputType = {
     id?: true
+    authorId?: true
+    points?: true
   }
 
   export type PostMinAggregateInputType = {
@@ -1809,6 +1930,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     title?: true
+    content?: true
+    authorId?: true
+    points?: true
   }
 
   export type PostMaxAggregateInputType = {
@@ -1816,6 +1940,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     title?: true
+    content?: true
+    authorId?: true
+    points?: true
   }
 
   export type PostCountAggregateInputType = {
@@ -1823,6 +1950,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     title?: true
+    content?: true
+    authorId?: true
+    points?: true
     _all?: true
   }
 
@@ -1923,6 +2053,9 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     title: string
+    content: string | null
+    authorId: number
+    points: number
     _count: PostCountAggregateOutputType | null
     _avg: PostAvgAggregateOutputType | null
     _sum: PostSumAggregateOutputType | null
@@ -1949,6 +2082,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     title?: boolean
+    content?: boolean
+    author?: boolean | UserArgs
+    authorId?: boolean
+    points?: boolean
+  }
+
+  export type PostInclude = {
+    author?: boolean | UserArgs
   }
 
   export type PostGetPayload<
@@ -1960,11 +2101,14 @@ export namespace Prisma {
     ? never
     : S extends PostArgs | PostFindManyArgs
     ?'include' extends U
-    ? Post 
+    ? Post  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'author' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-    P extends keyof Post ? Post[P] : never
+        P extends 'author' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Post ? Post[P] : never
   } 
     : Post
   : Post
@@ -2339,6 +2483,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
+    author<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | null >, Prisma__UserClient<UserGetPayload<T> | null >>;
 
     private get _document();
     /**
@@ -2377,6 +2522,11 @@ export namespace Prisma {
     **/
     select?: PostSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
+    /**
      * Filter, which Post to fetch.
      * 
     **/
@@ -2404,6 +2554,11 @@ export namespace Prisma {
      * 
     **/
     select?: PostSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
     /**
      * Filter, which Post to fetch.
      * 
@@ -2468,6 +2623,11 @@ export namespace Prisma {
     **/
     select?: PostSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
+    /**
      * Filter, which Posts to fetch.
      * 
     **/
@@ -2514,6 +2674,11 @@ export namespace Prisma {
     **/
     select?: PostSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
+    /**
      * The data needed to create a Post.
      * 
     **/
@@ -2543,6 +2708,11 @@ export namespace Prisma {
      * 
     **/
     select?: PostSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
     /**
      * The data needed to update a Post.
      * 
@@ -2583,6 +2753,11 @@ export namespace Prisma {
     **/
     select?: PostSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
+    /**
      * The filter to search for the Post to update in case it exists.
      * 
     **/
@@ -2609,6 +2784,11 @@ export namespace Prisma {
      * 
     **/
     select?: PostSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
     /**
      * Filter which Post to delete.
      * 
@@ -2650,6 +2830,11 @@ export namespace Prisma {
      * 
     **/
     select?: PostSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: PostInclude | null
   }
 
 
@@ -2665,7 +2850,10 @@ export namespace Prisma {
     id: 'id',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    title: 'title'
+    title: 'title',
+    content: 'content',
+    authorId: 'authorId',
+    points: 'points'
   };
 
   export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
@@ -2724,6 +2912,7 @@ export namespace Prisma {
     username?: StringFilter | string
     email?: StringFilter | string
     password?: StringFilter | string
+    posts?: PostListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -2733,6 +2922,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    posts?: PostOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = {
@@ -2775,6 +2965,10 @@ export namespace Prisma {
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     title?: StringFilter | string
+    content?: StringNullableFilter | string | null
+    author?: XOR<UserRelationFilter, UserWhereInput>
+    authorId?: IntFilter | number
+    points?: IntFilter | number
   }
 
   export type PostOrderByWithRelationInput = {
@@ -2782,6 +2976,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     title?: SortOrder
+    content?: SortOrder
+    author?: UserOrderByWithRelationInput
+    authorId?: SortOrder
+    points?: SortOrder
   }
 
   export type PostWhereUniqueInput = {
@@ -2793,6 +2991,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     title?: SortOrder
+    content?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
     _count?: PostCountOrderByAggregateInput
     _avg?: PostAvgOrderByAggregateInput
     _max?: PostMaxOrderByAggregateInput
@@ -2808,6 +3009,9 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter | Date | string
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
     title?: StringWithAggregatesFilter | string
+    content?: StringNullableWithAggregatesFilter | string | null
+    authorId?: IntWithAggregatesFilter | number
+    points?: IntWithAggregatesFilter | number
   }
 
   export type UserCreateInput = {
@@ -2816,6 +3020,7 @@ export namespace Prisma {
     username: string
     email: string
     password: string
+    posts?: PostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -2825,6 +3030,7 @@ export namespace Prisma {
     username: string
     email: string
     password: string
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -2833,6 +3039,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    posts?: PostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -2842,6 +3049,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -2874,6 +3082,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     title: string
+    content?: string | null
+    author: UserCreateNestedOneWithoutPostsInput
+    points?: number
   }
 
   export type PostUncheckedCreateInput = {
@@ -2881,12 +3092,18 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     title: string
+    content?: string | null
+    authorId: number
+    points?: number
   }
 
   export type PostUpdateInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    author?: UserUpdateOneRequiredWithoutPostsNestedInput
+    points?: IntFieldUpdateOperationsInput | number
   }
 
   export type PostUncheckedUpdateInput = {
@@ -2894,6 +3111,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    authorId?: IntFieldUpdateOperationsInput | number
+    points?: IntFieldUpdateOperationsInput | number
   }
 
   export type PostCreateManyInput = {
@@ -2901,12 +3121,17 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     title: string
+    content?: string | null
+    authorId: number
+    points?: number
   }
 
   export type PostUpdateManyMutationInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
   }
 
   export type PostUncheckedUpdateManyInput = {
@@ -2914,6 +3139,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    authorId?: IntFieldUpdateOperationsInput | number
+    points?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter = {
@@ -2951,6 +3179,16 @@ export namespace Prisma {
     endsWith?: string
     mode?: QueryMode
     not?: NestedStringFilter | string
+  }
+
+  export type PostListRelationFilter = {
+    every?: PostWhereInput
+    some?: PostWhereInput
+    none?: PostWhereInput
+  }
+
+  export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -3036,15 +3274,40 @@ export namespace Prisma {
     _max?: NestedStringFilter
   }
 
+  export type StringNullableFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableFilter | string | null
+  }
+
+  export type UserRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
   export type PostCountOrderByAggregateInput = {
     id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     title?: SortOrder
+    content?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
   }
 
   export type PostAvgOrderByAggregateInput = {
     id?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
   }
 
   export type PostMaxOrderByAggregateInput = {
@@ -3052,6 +3315,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     title?: SortOrder
+    content?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
   }
 
   export type PostMinOrderByAggregateInput = {
@@ -3059,10 +3325,47 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     title?: SortOrder
+    content?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
   }
 
   export type PostSumOrderByAggregateInput = {
     id?: SortOrder
+    authorId?: SortOrder
+    points?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
+  }
+
+  export type PostCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
+    connect?: Enumerable<PostWhereUniqueInput>
+  }
+
+  export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
+    connect?: Enumerable<PostWhereUniqueInput>
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -3073,12 +3376,58 @@ export namespace Prisma {
     set?: string
   }
 
+  export type PostUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
+    set?: Enumerable<PostWhereUniqueInput>
+    disconnect?: Enumerable<PostWhereUniqueInput>
+    delete?: Enumerable<PostWhereUniqueInput>
+    connect?: Enumerable<PostWhereUniqueInput>
+    update?: Enumerable<PostUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<PostUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<PostScalarWhereInput>
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
+    set?: Enumerable<PostWhereUniqueInput>
+    disconnect?: Enumerable<PostWhereUniqueInput>
+    delete?: Enumerable<PostWhereUniqueInput>
+    connect?: Enumerable<PostWhereUniqueInput>
+    update?: Enumerable<PostUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<PostUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<PostScalarWhereInput>
+  }
+
+  export type UserCreateNestedOneWithoutPostsInput = {
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type UserUpdateOneRequiredWithoutPostsNestedInput = {
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
+    upsert?: UserUpsertWithoutPostsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
   }
 
   export type NestedIntFilter = {
@@ -3173,6 +3522,183 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedStringFilter
     _max?: NestedStringFilter
+  }
+
+  export type NestedStringNullableFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableFilter | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
+  }
+
+  export type NestedIntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableFilter | number | null
+  }
+
+  export type PostCreateWithoutAuthorInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title: string
+    content?: string | null
+    points?: number
+  }
+
+  export type PostUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title: string
+    content?: string | null
+    points?: number
+  }
+
+  export type PostCreateOrConnectWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type PostCreateManyAuthorInputEnvelope = {
+    data: Enumerable<PostCreateManyAuthorInput>
+    skipDuplicates?: boolean
+  }
+
+  export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    data: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type PostUpdateManyWithWhereWithoutAuthorInput = {
+    where: PostScalarWhereInput
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutPostsInput>
+  }
+
+  export type PostScalarWhereInput = {
+    AND?: Enumerable<PostScalarWhereInput>
+    OR?: Enumerable<PostScalarWhereInput>
+    NOT?: Enumerable<PostScalarWhereInput>
+    id?: IntFilter | number
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    title?: StringFilter | string
+    content?: StringNullableFilter | string | null
+    authorId?: IntFilter | number
+    points?: IntFilter | number
+  }
+
+  export type UserCreateWithoutPostsInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    username: string
+    email: string
+    password: string
+  }
+
+  export type UserUncheckedCreateWithoutPostsInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    username: string
+    email: string
+    password: string
+  }
+
+  export type UserCreateOrConnectWithoutPostsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+  }
+
+  export type UserUpsertWithoutPostsInput = {
+    update: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+  }
+
+  export type UserUpdateWithoutPostsInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserUncheckedUpdateWithoutPostsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PostCreateManyAuthorInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title: string
+    content?: string | null
+    points?: number
+  }
+
+  export type PostUpdateWithoutAuthorInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PostUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PostUncheckedUpdateManyWithoutPostsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
   }
 
 

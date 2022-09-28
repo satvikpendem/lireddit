@@ -3,25 +3,35 @@ export default interface PrismaTypes {
     User: {
         Name: "User";
         Shape: User;
-        Include: never;
+        Include: Prisma.UserInclude;
         Select: Prisma.UserSelect;
         OrderBy: Prisma.UserOrderByWithRelationInput;
         WhereUnique: Prisma.UserWhereUniqueInput;
         Where: Prisma.UserWhereInput;
-        RelationName: never;
-        ListRelations: never;
-        Relations: {};
+        RelationName: "posts";
+        ListRelations: "posts";
+        Relations: {
+            posts: {
+                Shape: Post[];
+                Types: PrismaTypes["Post"];
+            };
+        };
     };
     Post: {
         Name: "Post";
         Shape: Post;
-        Include: never;
+        Include: Prisma.PostInclude;
         Select: Prisma.PostSelect;
         OrderBy: Prisma.PostOrderByWithRelationInput;
         WhereUnique: Prisma.PostWhereUniqueInput;
         Where: Prisma.PostWhereInput;
-        RelationName: never;
+        RelationName: "author";
         ListRelations: never;
-        Relations: {};
+        Relations: {
+            author: {
+                Shape: User;
+                Types: PrismaTypes["User"];
+            };
+        };
     };
 }

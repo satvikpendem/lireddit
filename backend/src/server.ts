@@ -13,6 +13,7 @@ export async function startServer() {
 
   const app = express();
 
+  app.set("trust proxy", 1);
   app.use(session);
 
   // https://blog.devgenius.io/graphql-apollo-studio-and-cookies-5d8519d0ca7e

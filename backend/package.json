@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.2.3",
   "scripts": {
     "start": "nodemon dist/index.js",
+    "prod": "node dist/index.js",
     "watch": "swc src -d dist -w",
     "check": "tsc --noEmit",
     "studio": "prisma studio",

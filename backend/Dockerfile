@@ -7,7 +7,7 @@ COPY [".", "."]
 RUN ["yarn", "pnpify", "prisma", "generate"]
 RUN ["yarn", "prod-install", "--production", "dist"]
 RUN ["yarn", "swc", "src", "-d", "dist"]
-COPY [".env", "./dist/"]
+# COPY [".env", "./dist/"]
 RUN ["cp", "-r", "src/prisma", "dist/prisma"]
 RUN ["cp", "src/generated/prisma-client/schema.prisma", "src/generated/prisma-client/libquery_engine-debian-openssl-3.0.x.so.node", "src/generated/prisma-client/package.json", "dist/generated/prisma-client"]
 

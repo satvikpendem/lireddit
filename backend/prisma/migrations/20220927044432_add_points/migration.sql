@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Post" ADD COLUMN     "points" INTEGER NOT NULL DEFAULT 0;

@@ -12,7 +12,7 @@ RUN ["yarn", "swc", "src", "-d", "dist"]
 RUN ["cp", "-r", "src/prisma", "dist/prisma"]
 RUN ["cp", "src/generated/prisma-client/schema.prisma", "src/generated/prisma-client/libquery_engine-debian-openssl-3.0.x.so.node", "src/generated/prisma-client/package.json", "dist/generated/prisma-client"]
 
-FROM node:alpine
+FROM node:slim
 WORKDIR /usr/src/app
 COPY --from=BUILD ["usr/src/app/dist", "./"]
 ENTRYPOINT ["yarn", "prod:dist"]

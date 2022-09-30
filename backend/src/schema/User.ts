@@ -73,8 +73,8 @@ builder.queryFields(
       args: {
         id: t.arg.id({ required: true }),
       },
-      resolve: (query, _, args) =>
-        db.user.findUnique({
+      resolve: async (query, _, args) =>
+        await db.user.findUnique({
           ...query,
           where: {
             id: Number.parseInt(String(args.id)),
@@ -84,11 +84,11 @@ builder.queryFields(
     me: t.prismaField({
       type: "User",
       nullable: true,
-      resolve: (query, _, __, { req: { session: { userId } } }) => {
+      resolve: async (query, _, __, { req: { session: { userId } } }) => {
         if (!userId) {
           throw new Error("Not authenticated");
         }
-        return db.user.findUnique({
+        return await db.user.findUnique({
           ...query,
           where: {
             id: userId,

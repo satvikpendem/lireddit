@@ -5,6 +5,7 @@
     "start": "nodemon dist/index.js",
     "prod": "node dist/index.js",
     "prod:dist": "node index.js",
+    "gen:types": "yarn dlx gen-env-types .env -o src/env.d.ts -e .",
     "watch": "swc src -d dist -w",
     "check": "tsc --noEmit",
     "studio": "prisma studio",

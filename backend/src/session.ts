@@ -3,7 +3,7 @@ import { COOKIE_NAME, PROD } from "./constants";
 
 export default ironSession({
   cookieName: COOKIE_NAME,
-  password: process.env["SESSION_PASSWORD"]!,
+  password: process.env.SESSION_PASSWORD!,
   cookieOptions: {
     secure: true,
     httpOnly: true,

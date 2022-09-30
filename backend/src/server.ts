@@ -9,8 +9,6 @@ import { db } from "./db";
 import { Context } from "./types";
 
 export async function startServer() {
-  db.user.deleteMany({});
-
   const app = express();
 
   app.set("trust proxy", 1);
@@ -20,7 +18,7 @@ export async function startServer() {
   // This is a workaround for Apollo Studio to work with cookies.
   !PROD && app.set("trust proxy", 1);
 
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379");
 
   const server = new ApolloServer({
     schema,

@@ -1,6 +1,6 @@
-FROM node:latest as BUILD
+FROM node:slim as BUILD
 WORKDIR /usr/src/app
-COPY ["package.json", ".env", ".swcrc", "./"]
+COPY ["package.json", ".swcrc", "./"]
 RUN ["yarn", "set", "version", "berry"]
 RUN ["yarn", "plugin", "import", "https://gitlab.com/Larry1123/yarn-contrib/-/raw/master/packages/plugin-production-install/bundles/@yarnpkg/plugin-production-install.js"]
 COPY [".", "."]

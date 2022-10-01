@@ -21,10 +21,8 @@ const Nav: React.FC<Props> = () => {
   const [loggingOut, setLoggingOut] = useState(false);
 
   if (fetching) {
-    return <div>Loading...</div>;
+    return <div className={_base}>Loading...</div>;
   }
-
-  console.log({ data });
 
   if (data?.me) {
     return (

@@ -3,15 +3,16 @@
   "packageManager": "yarn@3.2.3",
   "scripts": {
     "start": "nodemon dist/index.js",
-    "prod": "node dist/index.js",
-    "prod:dist": "node index.js",
+    "prod:local": "node dist/index.js",
+    "prod": "node index.js",
     "gen:types": "yarn dlx gen-env-types .env -o src/env.d.ts -e .",
     "watch": "swc src -d dist -w",
     "check": "tsc --noEmit",
     "studio": "prisma studio",
     "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"yarn check\" \"yarn watch\" \"yarn start\" \"yarn studio\"",
     "db:migrate": "yarn pnpify prisma migrate dev",
-    "db:generate": "yarn pnpify prisma generate"
+    "db:generate": "yarn pnpify prisma generate",
+    "db:deploy": "yarn pnpify prisma deploy"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",

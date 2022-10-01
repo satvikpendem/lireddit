@@ -15,7 +15,7 @@ RUN ["cp", "-r", "src/prisma", "dist/prisma"]
 FROM node:slim
 WORKDIR /usr/src/app
 COPY --from=BUILD ["usr/src/app/dist", "./"]
-RUN ["yarn", "prisma", "deploy"]
+RUN ["yarn", "dlx", "prisma", "migrate", "deploy"]
 ENTRYPOINT ["yarn", "prod"]
 EXPOSE 8080
 

@@ -9,7 +9,9 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    # Yarn 1 vs Yarn 2+, no `--frozen-lockfile` flag
+    # if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    if [ -f yarn.lock ]; then yarn; \
     elif [ -f package-lock.json ]; then npm ci; \
     elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
     else echo "Lockfile not found." && exit 1; \
@@ -19,7 +21,8 @@ RUN \
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/.yarn ./.yarn
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -38,7 +41,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

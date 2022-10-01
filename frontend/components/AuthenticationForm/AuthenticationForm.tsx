@@ -134,6 +134,7 @@ const AuthenticationForm: React.FC<Props> = ({
         return `Check your email for a link to reset your password!`;
       }
     }
+    return "";
   };
 
   const isFailure = () => {
@@ -167,6 +168,7 @@ const AuthenticationForm: React.FC<Props> = ({
         return data.forgotPassword.error;
       }
     }
+    return "";
   };
 
   function submitButton() {

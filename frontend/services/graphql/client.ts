@@ -11,7 +11,7 @@ import {
 import { updateQuery } from "../../util/updateQuery";
 
 export const client = createClient({
-  url: process.env.SERVER_URL || "http://localhost:4000/graphql",
+  url: process.env.SERVER_URL,
   fetchOptions: {
     credentials: "include",
   },

@@ -12,5 +12,11 @@
     "type": "commonjs",
     "strict": true
   },
-  "minify": true
+  "minify": true,
+  "exclude": [
+    "dist/node_modules",
+    "dist/generated/prisma-client/index.d.ts",
+    "dist/generated/prisma-client/index.d.js",
+    "dist/generated/prisma-client/runtime/index.js"
+  ]
 }

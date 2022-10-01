@@ -4,7 +4,7 @@ import Redis from "ioredis";
 
 import { schema } from "./schema";
 import session from "./session";
-import { PROD } from "./constants";
+import { APOLLO_STUDIO_URL, PROD, WEB_URL } from "./constants";
 import { Context } from "./types";
 
 export async function startServer() {
@@ -33,10 +33,8 @@ export async function startServer() {
     // Add CORS here to allow Apollo Studio to work with cookies.
     cors: {
       origin: [
-        // process.env.WEB_URL,
-        // "https://studio.apollographql.com",
-        // "http://localhost:3000",
-        "*",
+        WEB_URL,
+        APOLLO_STUDIO_URL,
       ],
       credentials: true,
     },

@@ -11,6 +11,7 @@ RUN ["yarn", "swc", "src", "-d", "dist"]
 RUN ["cp", "-r", "src/generated", "dist/generated"]
 RUN ["yarn", "swc", "dist", "-d", "dist"]
 RUN ["cp", "-r", "src/prisma", "dist/prisma"]
+RUN ["cp", "package.json.prod", "dist/package.json"]
 
 FROM node:slim
 WORKDIR /usr/src/app

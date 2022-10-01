@@ -12,7 +12,7 @@
     "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"yarn check\" \"yarn watch\" \"yarn start\" \"yarn studio\"",
     "db:migrate": "yarn pnpify prisma migrate dev",
     "db:generate": "yarn pnpify prisma generate",
-    "db:deploy": "yarn pnpify prisma deploy"
+    "db:deploy": "yarn pnpify prisma migrate deploy"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",

@@ -1,0 +1,37 @@
+{
+  "dependencies": {
+    "@pothos/core": "^3.22.5",
+    "@pothos/plugin-errors": "^3.8.4",
+    "@pothos/plugin-prisma": "^3.35.4",
+    "@prisma/client": "4.4.0",
+    "@yarnpkg/pnpify": "^4.0.0-rc.22",
+    "apollo-server-express": "^3.10.2",
+    "argon2": "^0.29.1",
+    "class-validator": "^0.13.2",
+    "express": "^4.18.1",
+    "graphql": "^16.6.0",
+    "ioredis": "^5.2.3",
+    "iron-session": "^6.2.1",
+    "nodemailer": "^6.8.0",
+    "pg": "^8.8.0",
+    "uuid": "^9.0.0"
+  },
+  "name": "lireddit-server",
+  "packageManager": "yarn@3.2.3",
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "db:deploy": "yarn pnpify prisma migrate deploy",
+    "db:generate": "yarn pnpify prisma generate",
+    "db:migrate": "yarn pnpify prisma migrate dev",
+    "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"yarn check\" \"yarn watch\" \"yarn start\" \"yarn studio\"",
+    "gen:types": "yarn dlx gen-env-types .env -o src/env.d.ts -e .",
+    "prod": "node index.js",
+    "prod:local": "node dist/index.js",
+    "start": "nodemon dist/index.js",
+    "studio": "prisma studio",
+    "watch": "swc src -d dist -w"
+  }
+}

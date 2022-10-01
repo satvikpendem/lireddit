@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     if (data?.login?.__typename === "MutationLoginSuccess") {
       router.push("/");
     }
-  }, [data?.login?.__typename]);
+  }, [data?.login?.__typename, router]);
 
   const onSubmit = async (
     { usernameOrEmail, password }: LoginFormValues,

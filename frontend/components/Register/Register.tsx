@@ -25,7 +25,7 @@ const Register: React.FC = () => {
     if (data?.register?.__typename === "MutationRegisterSuccess") {
       router.push("/");
     }
-  }, [data?.register?.__typename]);
+  }, [data?.register?.__typename, router]);
 
   const onSubmit = ({ username, email, password }: RegisterFormValues) => {
     register({

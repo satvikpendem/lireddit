@@ -10,6 +10,10 @@ import {
 } from "./generated/graphql";
 import { updateQuery } from "../../util/updateQuery";
 
+console.log("process.env", process.env);
+
+console.log("process.env.SERVER_URL", process.env.SERVER_URL);
+
 export const client = createClient({
   url: process.env.SERVER_URL,
   fetchOptions: {

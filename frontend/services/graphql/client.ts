@@ -1,5 +1,3 @@
-import { env } from "process";
-
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import {
@@ -11,9 +9,10 @@ import {
   RegisterMutation,
 } from "./generated/graphql";
 import { updateQuery } from "../../util/updateQuery";
+import { GRAPHQL_URL } from "../../util/constants";
 
 export const client = createClient({
-  url: env.SERVER_URL ?? "http://localhost:4000/graphql",
+  url: GRAPHQL_URL,
   fetchOptions: {
     credentials: "include",
   },

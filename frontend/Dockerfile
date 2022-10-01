@@ -13,7 +13,6 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV SERVER_URL https://api.lireddit.pantheonlabs.io
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -27,7 +26,6 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV SERVER_URL https://api.lireddit.pantheonlabs.io
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

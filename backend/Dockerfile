@@ -11,13 +11,12 @@ RUN ["yarn", "swc", "src", "-d", "dist"]
 RUN ["cp", "-r", "src/generated", "dist/generated"]
 RUN ["yarn", "swc", "dist", "-d", "dist"]
 RUN ["cp", "-r", "src/prisma", "dist/prisma"]
-# RUN ["rm", "-rf", ""]
 
 FROM node:slim
 WORKDIR /usr/src/app
 COPY --from=BUILD ["usr/src/app/dist", "./"]
+RUN ["yarn", "db:deploy"]
 ENTRYPOINT ["yarn", "prod"]
-# ENTRYPOINT ["yarn", "prod:local"]
 EXPOSE 8080
 
 ### Shell script form for BUILD

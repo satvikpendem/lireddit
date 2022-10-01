@@ -33,9 +33,10 @@ export async function startServer() {
     // Add CORS here to allow Apollo Studio to work with cookies.
     cors: {
       origin: [
-        process.env.WEB_URL,
-        "https://studio.apollographql.com",
-        "http://localhost:3000",
+        // process.env.WEB_URL,
+        // "https://studio.apollographql.com",
+        // "http://localhost:3000",
+        "*",
       ],
       credentials: true,
     },

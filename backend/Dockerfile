@@ -1,10 +1,9 @@
-FROM node:slim as BUILD
+FROM node:latest as BUILD
 WORKDIR /usr/src/app
 COPY ["package.json", ".swcrc", "./"]
 RUN ["yarn", "set", "version", "berry"]
 RUN ["yarn", "plugin", "import", "https://gitlab.com/Larry1123/yarn-contrib/-/raw/master/packages/plugin-production-install/bundles/@yarnpkg/plugin-production-install.js"]
 COPY [".", "."]
-RUN apt-get -qy update && apt-get -qy install openssl
 RUN ["yarn"]
 RUN ["yarn", "pnpify", "prisma", "generate"]
 RUN ["yarn", "prod-install", "--production", "dist"]

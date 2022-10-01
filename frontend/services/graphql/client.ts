@@ -1,3 +1,5 @@
+import { env } from "process";
+
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import {
@@ -10,12 +12,10 @@ import {
 } from "./generated/graphql";
 import { updateQuery } from "../../util/updateQuery";
 
-console.log("process.env", process.env);
-
-console.log("process.env.SERVER_URL", process.env.SERVER_URL);
-
 export const client = createClient({
-  url: process.env.SERVER_URL,
+  url: (env.NODE_ENV === "production"
+    ? env.SERVER_URL_PROD ?? "http://localhost:4000/graphql"
+    : env.SERVER_URL_DEV ?? "http://localhost:4000/graphql"),
   fetchOptions: {
     credentials: "include",
   },

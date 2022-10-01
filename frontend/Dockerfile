@@ -16,7 +16,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN rm -rf .yarn .yarnrc.yml yarn.lock .env
+RUN rm -rf .yarn .yarnrc.yml yarn.lock
 
 RUN npm run build
 

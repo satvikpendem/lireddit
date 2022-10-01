@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"next dev\" \"yarn gql:gen\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "dev": "concurrently -c bgBlueBright,bgGreenBright,bgCyanBright \"next dev\" \"yarn gql:gen\"",
     "gql:gen": "graphql-codegen --watch --config codegen.yml",
     "env:gen": "yarn dlx gen-env-types .env -o util/env.d.ts -e ."
   },

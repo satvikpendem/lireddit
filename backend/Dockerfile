@@ -8,9 +8,8 @@ RUN ["yarn"]
 RUN ["yarn", "pnpify", "prisma", "generate"]
 RUN ["yarn", "prod-install", "--production", "dist"]
 RUN ["yarn", "swc", "src", "-d", "dist"]
-# COPY [".env", "./dist/"]
 RUN ["cp", "-r", "src/prisma", "dist/prisma"]
-RUN ["cp", "src/generated/prisma-client/schema.prisma", "src/generated/prisma-client/libquery_engine-debian-openssl-3.0.x.so.node", "src/generated/prisma-client/package.json", "dist/generated/prisma-client"]
+RUN ["cp", "src/generated/prisma-client/schema.prisma", "src/generated/prisma-client/*.node", "src/generated/prisma-client/package.json", "dist/generated/prisma-client"]
 
 FROM node:slim
 WORKDIR /usr/src/app
@@ -24,6 +23,6 @@ EXPOSE 8080
 # yarn swc src -d dist
 # cp .env dist/.env
 # cp -r src/prisma dist
-# cp src/generated/prisma-client/schema.prisma src/generated/prisma-client/libquery_engine-debian-openssl-3.0.x.so.node src/generated/prisma-client/package.json dist/generated/prisma-client 
+# cp src/generated/prisma-client/schema.prisma src/generated/prisma-client/*.node src/generated/prisma-client/package.json dist/generated/prisma-client 
 # cd dist
 # yarn prod:dist

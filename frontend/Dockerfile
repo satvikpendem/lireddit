@@ -13,15 +13,13 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV SERVER_URL https://api.lireddit.pantheonlabs.io
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN rm -rf .yarn .yarnrc.yml yarn.lock
+RUN rm -rf .yarn .yarnrc.yml yarn.lock .env
 
 RUN npm run build
-
-# If using npm comment out above and use below instead
-# RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:18-alpine AS runner
@@ -29,6 +27,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV SERVER_URL https://api.lireddit.pantheonlabs.io
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

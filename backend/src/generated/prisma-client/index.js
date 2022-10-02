@@ -154,12 +154,7 @@ const config = {
     "config": {
       "engineType": "library"
     },
-    "binaryTargets": [
-      {
-        "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x"
-      }
-    ],
+    "binaryTargets": [],
     "previewFeatures": [],
     "isCustomOutput": true
   },

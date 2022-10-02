@@ -15,6 +15,9 @@ RUN ["cp", "package.json.prod", "dist/package.json"]
 
 FROM node:slim
 WORKDIR /usr/src/app
+ENV NODE_ENV production
+ENV DATABASE_URL "postgresql://cl8p25oe80006cuo92a1o1hc5:VJ94dsoCEleiEs4rnDUvTI6g@147.182.213.82:9001/cl8p25oea0008cuo99o5faqjl"
+ENV REDIS_URL "redis://:MzRw9CrFpMm7bubV0ap2UIh5@147.182.213.82:9000/"
 
 COPY --from=BUILD ["usr/src/app/dist", "./"]
 RUN ["yarn", "dlx", "prisma", "migrate", "deploy"]

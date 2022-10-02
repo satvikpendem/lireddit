@@ -24,6 +24,7 @@ export async function startServer() {
     introspection: !PROD,
     csrfPrevention: PROD,
     context: ({ req, res }): Context => ({ req, res, redis }),
+    cache: "bounded",
   });
   await server.start();
 

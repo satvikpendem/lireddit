@@ -15,6 +15,7 @@ RUN ["cp", "package.json.prod", "dist/package.json"]
 
 FROM node:slim
 WORKDIR /usr/src/app
+
 COPY --from=BUILD ["usr/src/app/dist", "./"]
 RUN ["yarn", "dlx", "prisma", "migrate", "deploy"]
 ENTRYPOINT ["yarn", "prod"]

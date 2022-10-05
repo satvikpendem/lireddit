@@ -7,6 +7,7 @@ import {
   CreatePostMutation,
   CreatePostMutationVariables,
 } from "../../services/graphql/generated/graphql";
+import { useIsAuthN } from "../../util/useIsAuthN";
 import AnimatedToggle from "../AnimatedToggle/AnimatedToggle";
 import {
   _error,
@@ -26,6 +27,8 @@ type FormValues = {
 };
 
 const CreatePost: React.FC<Props> = () => {
+  useIsAuthN();
+
   const {
     register,
     formState: { errors, isSubmitting },

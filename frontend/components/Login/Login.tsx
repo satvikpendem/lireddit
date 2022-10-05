@@ -1,6 +1,6 @@
-import { useMutation } from "urql";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useMutation } from "urql";
 
 import {
   LoginDocument,
@@ -23,7 +23,11 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (data?.login?.__typename === "MutationLoginSuccess") {
-      router.push("/");
+      if (typeof router.query["next"] === "string") {
+        router.push(router.query["next"]);
+      } else {
+        router.push("/");
+      }
     }
   }, [data?.login?.__typename, router]);
 

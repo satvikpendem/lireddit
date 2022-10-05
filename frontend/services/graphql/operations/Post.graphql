@@ -1,3 +1,15 @@
+query Posts {
+  posts {
+    id
+    title
+    content
+    author {
+      id
+      username
+    }
+  }
+}
+
 mutation CreatePost($input: PostInput!) {
   createPost(input: $input) {
     ... on Error {

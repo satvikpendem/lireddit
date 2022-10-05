@@ -45,7 +45,7 @@ builder.queryFields(
       resolve: (query, _, args) =>
         db.post.findMany({
           ...query,
-          take: args.take ?? Math.max(args.take!, 10),
+          take: args.take ?? Math.min(args.take!, 10),
           skip: args.skip ?? 1, // skip cursor
         }),
     }),

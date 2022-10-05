@@ -41,12 +41,18 @@ builder.queryFields(
       args: {
         take: t.arg.int(),
         skip: t.arg.int(),
+        cursor: t.arg.int(),
       },
-      resolve: (query, _, args) =>
+      resolve: (query, _, {
+        take,
+        skip,
+        cursor,
+      }) =>
         db.post.findMany({
           ...query,
-          take: args.take ?? Math.min(args.take!, 10),
-          skip: args.skip ?? 1, // skip cursor
+          take: Math.min(take ?? 50, 50),
+          skip: skip ?? cursor ? 1 : 0, // skip cursor if present
+          cursor: cursor ? { id: cursor } : undefined as any,
         }),
     }),
     post: t.prismaField({

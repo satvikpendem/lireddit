@@ -1,6 +1,8 @@
 import { builder } from "../builder";
 import { db } from "../db";
 
+import { Prisma } from "../generated/prisma-client/index";
+
 const PostInput = builder.inputType("PostInput", {
   fields: (t) => ({
     title: t.string({ required: true }),
@@ -52,7 +54,7 @@ builder.queryFields(
           ...query,
           take: Math.min(take ?? 50, 50),
           skip: skip ?? cursor ? 1 : 0, // skip cursor if present
-          cursor: cursor ? { id: cursor } : undefined as any,
+          cursor: (cursor && { id: cursor }) as Prisma.PostWhereUniqueInput,
         }),
     }),
     post: t.prismaField({
